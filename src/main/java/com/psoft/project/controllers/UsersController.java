@@ -14,8 +14,11 @@ public class UsersController {
 	private UserService userService;
 	
 	@PostMapping("/newUser")
-	public void setUser(@RequestBody User usuario) {
-		userService.setUser(usuario);
+	public void setUser(@RequestBody User user) {
+		userService.setUser(user);
+		userService.sendEmail(user.getEmail());
 	}
+	
+	
 
 }

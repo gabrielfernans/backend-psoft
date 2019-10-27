@@ -1,5 +1,8 @@
 package com.psoft.project.services;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import com.psoft.project.entities.User;
@@ -9,6 +12,8 @@ import com.psoft.project.repositories.UserRepository;
 public class UserService {
 	
 	private UserRepository<User, String> users;
+	@Autowired
+	private JavaMailSender emailSender;
 	
 	public UserService(UserRepository<User, String> users) {
 		super();
@@ -23,4 +28,11 @@ public class UserService {
 		return users.findByEmail(email);
 	}
 
+	public void sendEmail(String email) {
+		SimpleMailMessage message = new SimpleMailMessage();
+		message.setText("Email send from AJUDA-psoft");
+		message.setTo(email);
+		emailSender.send(message);
+		
+	}
 }
