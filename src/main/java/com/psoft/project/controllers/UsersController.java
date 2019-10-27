@@ -17,6 +17,5 @@ public class UsersController {
 	public void setUser(@RequestBody User usuario) {
 		userService.setUser(usuario);
 	}
-	
 
 }

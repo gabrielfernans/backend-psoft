@@ -11,6 +11,7 @@ public class UserService {
 	private UserRepository<User, String> users;
 	
 	public UserService(UserRepository<User, String> users) {
+		super();
 		this.users = users;
 	}
 	
@@ -18,5 +19,8 @@ public class UserService {
 		users.save(user);
 	}
 	
+	public User getUser(String email) {
+		return users.findByEmail(email);
+	}
 
 }

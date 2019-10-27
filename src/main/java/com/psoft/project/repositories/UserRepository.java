@@ -9,5 +9,7 @@ import com.psoft.project.entities.User;
 
 @Repository
 public interface UserRepository<T, ID extends Serializable> extends JpaRepository<User, String>{
+	
+	User findByEmail(String email);
 
 }
