@@ -20,6 +20,11 @@ public class UsersController {
 		userService.setUser(user);
 	}
 	
+	@PostMapping("/forgotPassword")
+	public void forgotPassword(@RequestBody String email) {
+		userService.forgotPassword(email);
+	}
+	
 	
 
 }
