@@ -32,7 +32,7 @@ public class UserService {
 
 	private void sendEmail(String email) {
 		SimpleMailMessage message = new SimpleMailMessage();
-		message.setText("Email send from AJUDA-psoft");
+		message.setText("Seja bem-vindo ao AJUDE! <LINK> para primeiro acesso");
 		message.setTo(email);
 		emailSender.send(message);
 		
