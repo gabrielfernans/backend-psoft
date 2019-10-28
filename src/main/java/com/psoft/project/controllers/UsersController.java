@@ -1,5 +1,7 @@
 package com.psoft.project.controllers;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,9 +16,8 @@ public class UsersController {
 	private UserService userService;
 	
 	@PostMapping("/newUser")
-	public void setUser(@RequestBody User user) {
+	public void setUser(@RequestBody @Valid User user) {
 		userService.setUser(user);
-		userService.sendEmail(user.getEmail());
 	}
 	
 	

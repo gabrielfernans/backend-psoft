@@ -21,14 +21,16 @@ public class UserService {
 	}
 	
 	public void setUser(User user){
+		if(user != null)
 		users.save(user);
+		this.sendEmail(user.getEmail());
 	}
 	
 	public User getUser(String email) {
 		return users.findByEmail(email);
 	}
 
-	public void sendEmail(String email) {
+	private void sendEmail(String email) {
 		SimpleMailMessage message = new SimpleMailMessage();
 		message.setText("Email send from AJUDA-psoft");
 		message.setTo(email);
