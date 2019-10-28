@@ -8,6 +8,7 @@ import javax.validation.constraints.NotBlank;
 
 @Entity
 public class User {
+
 	@NotBlank(message = "{email.not.blank}")
 	@Email(message = "{email.not.valid}")
 	@Id
@@ -52,6 +53,10 @@ public class User {
 
 	public String getPassword() {
 		return password;
+	}
+	
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 }

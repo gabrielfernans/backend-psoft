@@ -10,4 +10,5 @@ import com.psoft.project.entities.VerificationToken;
 @Repository
 public interface VerificationTokenRepository <T, Id extends Serializable> extends JpaRepository<VerificationToken, String>{
 
+	VerificationToken findByToken(String token);
 }

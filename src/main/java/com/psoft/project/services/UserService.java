@@ -1,6 +1,9 @@
 package com.psoft.project.services;
 
+import java.sql.Date;
 import java.util.UUID;
+
+import javax.servlet.ServletException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
@@ -12,16 +15,20 @@ import com.psoft.project.entities.VerificationToken;
 import com.psoft.project.repositories.UserRepository;
 import com.psoft.project.repositories.VerificationTokenRepository;
 
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.SignatureException;
+
 
 @Service
 public class UserService {
 	
 	private UserRepository<User, String> users;
-	private VerificationTokenRepository<User, String> tokens;
+	private VerificationTokenRepository<VerificationToken, String> tokens;
 	@Autowired
 	private JavaMailSender emailSender;
 	
-	public UserService(UserRepository<User, String> users, VerificationTokenRepository<User, String> tokens) {
+	public UserService(UserRepository<User, String> users, VerificationTokenRepository<VerificationToken, String> tokens) {
 		super();
 		this.users = users;
 		this.tokens = tokens;
@@ -41,9 +48,14 @@ public class UserService {
 		tokens.save(newUserToken);
 	}
 	
-	public void forgotPassword(String email) {
+	public void forgotPassword(String email) throws ServletException {
 		User user = users.findByEmail(email);
-		String token = UUID.randomUUID().toString();
+		if(user == null) {
+			System.out.println(email);
+			throw new ServletException("Usuario invalido");
+		}
+		String token =Jwts.builder().setSubject(UUID.randomUUID().toString()).signWith(SignatureAlgorithm.HS512, "valid token")
+				.setExpiration(new Date(System.currentTimeMillis() + 1 * 60 * 10000)).compact();
 		this.createVerificationToken(user, token);
 		sendEmailVerificationToken(email, token);
 	}
@@ -51,8 +63,8 @@ public class UserService {
 	private void sendEmailVerificationToken(String email, String token) {
 		SimpleMailMessage message = new SimpleMailMessage();
 		String url = "/v1/api/setPassword?token=" + token;
-		String m = "Para redefinir a senha acesse o link abaixo";
-		message.setText(m + "http://loaclhost:8080" + url);
+		String m = "Para redefinir a senha acesse o link abaixo ";
+		message.setText(m + "http://localhost:8080" + url);
 		message.setTo(email);
 		emailSender.send(message);	
 	}
@@ -62,6 +74,18 @@ public class UserService {
 		message.setText("Seja bem-vindo ao AJUDE! <LINK> para primeiro acesso");
 		message.setTo(email);
 		emailSender.send(message);	
+	}
+	
+	public void setPassword(String token, String newPassword) throws ServletException {
+		try {
+			Jwts.parser().setSigningKey("valid token").parseClaimsJws(token).getBody().getSubject();
+		} catch (SignatureException e) {
+			throw new ServletException("Token invalido ou expirado!");
+		}
+		
+		VerificationToken vToken = tokens.findByToken(token);
+		users.findByEmail(vToken.getUser().getEmail()).setPassword(newPassword);
+		users.save(users.findByEmail(vToken.getUser().getEmail()));
 	}
 	
 	
