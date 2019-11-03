@@ -34,9 +34,10 @@ public class UserService {
 		this.tokens = tokens;
 	}
 	
-	public void setUser(User user){
+	public User setUser(User user){
 		users.save(user);
 		this.sendEmail(user.getEmail());
+		return user;
 	}
 	
 	public User getUser(String email) {
@@ -76,7 +77,8 @@ public class UserService {
 		emailSender.send(message);	
 	}
 	
-	public void setPassword(String token, String newPassword) throws ServletException {
+	//redefinir senha esquecida
+	public User setPassword(String token, String newPassword) throws ServletException {
 		try {
 			Jwts.parser().setSigningKey("valid token").parseClaimsJws(token).getBody().getSubject();
 		} catch (SignatureException e) {
@@ -84,10 +86,14 @@ public class UserService {
 		}
 		
 		VerificationToken vToken = tokens.findByToken(token);
-		users.findByEmail(vToken.getUser().getEmail()).setPassword(newPassword);
-		users.save(users.findByEmail(vToken.getUser().getEmail()));
+		String email = vToken.getUser().getEmail();
+		users.findByEmail(email).setPassword(newPassword);
+		users.save(users.findByEmail(email));
+		tokens.deleteById(token);
+		return users.getOne(email);
 	}
 	
+	//apenas modificar a senha
 	public User modifyPassword(String email, String newPassword) {
 		User u = users.getOne(email);
 		u.setPassword(newPassword);

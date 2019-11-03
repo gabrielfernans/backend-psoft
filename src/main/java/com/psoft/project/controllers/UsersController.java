@@ -25,18 +25,28 @@ public class UsersController {
 	private JWTService jwtservice;
 	
 	@PostMapping("/newUser")
-	public void setUser(@RequestBody @Valid User user) {
-		userService.setUser(user);
+	public ResponseEntity<User> setUser(@RequestBody @Valid User user) {
+		return new ResponseEntity<User>(userService.setUser(user), HttpStatus.OK);
 	}
 	
 	@PostMapping("/forgotPassword")
-	public void forgotPassword(@RequestBody String email) throws ServletException {
-		userService.forgotPassword(email);
+	public ResponseEntity<User> forgotPassword(@RequestBody String email) throws ServletException {
+		try{
+			userService.forgotPassword(email);
+		}catch(ServletException s) {
+			return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<User>(HttpStatus.OK);
 	}
 	
 	@PutMapping("/setPassword")
-	public void newPassword(@RequestParam("token") String token, @RequestBody String newPassword) throws ServletException {
-		userService.setPassword(token, newPassword);
+	public ResponseEntity<User> newPassword(@RequestParam("token") String token, @RequestBody String newPassword) throws ServletException {
+		try{
+			return new ResponseEntity<User>(userService.setPassword(token, newPassword), HttpStatus.OK);
+		}catch(ServletException s) {
+			//usuario esta com codigo invalido ou vencido
+			return new ResponseEntity<User>(HttpStatus.FORBIDDEN);
+		}
 	}
 	
 	@PutMapping("/modifyPassword")
