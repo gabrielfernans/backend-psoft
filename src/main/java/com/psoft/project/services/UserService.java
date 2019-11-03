@@ -88,5 +88,17 @@ public class UserService {
 		users.save(users.findByEmail(vToken.getUser().getEmail()));
 	}
 	
+	public User modifyPassword(String email, String newPassword) {
+		User u = users.getOne(email);
+		u.setPassword(newPassword);
+		users.save(users.findByEmail(email));
+		return users.getOne(email);
+		
+	}
+
+	
+	
+	
+	
 	
 }
