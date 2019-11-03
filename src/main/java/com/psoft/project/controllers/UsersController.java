@@ -24,7 +24,7 @@ public class UsersController {
 	@Autowired
 	private JWTService jwtservice;
 	
-	@PostMapping("/newUser")
+	@PostMapping("/users")
 	public ResponseEntity<User> setUser(@RequestBody @Valid User user) {
 		return new ResponseEntity<User>(userService.setUser(user), HttpStatus.OK);
 	}
@@ -42,7 +42,9 @@ public class UsersController {
 	@PutMapping("/setPassword")
 	public ResponseEntity<User> newPassword(@RequestParam("token") String token, @RequestBody String newPassword) throws ServletException {
 		try{
-			return new ResponseEntity<User>(userService.setPassword(token, newPassword), HttpStatus.OK);
+			User u = userService.setPassword(token, newPassword);
+			if(u == null) return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
+			else return new ResponseEntity<User>(u, HttpStatus.OK); 
 		}catch(ServletException s) {
 			//usuario esta com codigo invalido ou vencido
 			return new ResponseEntity<User>(HttpStatus.FORBIDDEN);

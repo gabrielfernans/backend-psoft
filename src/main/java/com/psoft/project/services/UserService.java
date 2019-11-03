@@ -86,6 +86,7 @@ public class UserService {
 		}
 		
 		VerificationToken vToken = tokens.findByToken(token);
+		if(vToken == null) return null;
 		String email = vToken.getUser().getEmail();
 		users.findByEmail(email).setPassword(newPassword);
 		users.save(users.findByEmail(email));
