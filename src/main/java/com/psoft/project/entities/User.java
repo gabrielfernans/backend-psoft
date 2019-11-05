@@ -1,5 +1,7 @@
 package com.psoft.project.entities;
 
+import java.io.Serializable;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.validation.constraints.Email;
@@ -7,7 +9,7 @@ import javax.validation.constraints.NotBlank;
 
 
 @Entity
-public class User {
+public class User implements Serializable{
 
 	@NotBlank(message = "{email.not.blank}")
 	@Email(message = "{email.not.valid}")

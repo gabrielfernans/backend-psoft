@@ -15,6 +15,10 @@ public class Comment {
 	@ManyToOne(targetEntity = User.class, fetch = FetchType.EAGER)
 	private User user;
 	
+	public Comment() {
+		super();
+	}
+
 	public Comment(String comment, User user) {
 		super();
 		this.comment = comment;
