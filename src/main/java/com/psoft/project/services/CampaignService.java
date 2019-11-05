@@ -7,6 +7,10 @@ public class CampaignService {
 	
 	private CampaignRepository<Campaign, Integer> campaigns;
 
+	public CampaignService(CampaignRepository<Campaign, Integer> campaigns) {
+		this.campaigns = campaigns;
+	}
+
 	public Campaign setCampaign(Campaign campaign) {
 		this.campaigns.save(campaign);
 		return campaign;

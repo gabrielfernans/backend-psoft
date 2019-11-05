@@ -11,6 +11,10 @@ import javax.validation.constraints.NotBlank;
 @Entity
 public class User implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	@NotBlank(message = "{email.not.blank}")
 	@Email(message = "{email.not.valid}")
 	@Id
