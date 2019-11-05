@@ -17,6 +17,14 @@ public class Application {
 	}
 	
 	@Bean
+	public FilterRegistrationBean<TokenFilter> filterJwt() {
+		FilterRegistrationBean<TokenFilter> filterRB = new FilterRegistrationBean<TokenFilter>();
+		filterRB.setFilter(new TokenFilter());
+		filterRB.addUrlPatterns( "");
+		return filterRB;
+	}
+	
+	@Bean
 	public FilterRegistrationBean corsFilter() {
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		CorsConfiguration config = new CorsConfiguration().applyPermitDefaultValues();
