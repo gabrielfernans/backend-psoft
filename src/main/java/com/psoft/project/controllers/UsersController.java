@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,16 +18,23 @@ import com.psoft.project.entities.User;
 import com.psoft.project.services.JWTService;
 import com.psoft.project.services.UserService;
 
+@RequestMapping("/users")
 @RestController
 public class UsersController {
+	
 	@Autowired
 	private UserService userService;
 	@Autowired
 	private JWTService jwtservice;
 	
-	@PostMapping("/users")
+	//cria usuario, mas antes checa se o email ja existe. Caso não exista o usuario é criado.
+	@PostMapping()
 	public ResponseEntity<User> setUser(@RequestBody @Valid User user) {
-		return new ResponseEntity<User>(userService.setUser(user), HttpStatus.OK);
+		User tempUser = userService.getUser(user.getEmail());
+		if(tempUser == null)
+			return new ResponseEntity<User>(userService.setUser(user), HttpStatus.OK);
+		else
+			return new ResponseEntity<User>(HttpStatus.CONFLICT);
 	}
 	
 	@PostMapping("/forgotPassword")
