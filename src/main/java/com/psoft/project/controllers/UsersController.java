@@ -37,7 +37,7 @@ public class UsersController {
 			return new ResponseEntity<User>(HttpStatus.CONFLICT);
 	}
 	
-	@PostMapping("/forgotPassword")
+	@PostMapping("/password/new")
 	public ResponseEntity<User> forgotPassword(@RequestBody String email) throws ServletException {
 		try{
 			userService.forgotPassword(email);
@@ -47,7 +47,7 @@ public class UsersController {
 		return new ResponseEntity<User>(HttpStatus.OK);
 	}
 	
-	@PutMapping("/setPassword")
+	@PutMapping("/password/edit")
 	public ResponseEntity<User> newPassword(@RequestParam("token") String token, @RequestBody String newPassword) throws ServletException {
 		try{
 			User u = userService.setPassword(token, newPassword);
@@ -59,7 +59,7 @@ public class UsersController {
 		}
 	}
 	
-	@PutMapping("/modifyPassword")
+	@PutMapping("/password/update")
 	public ResponseEntity<User> modifyPassword(@RequestHeader("Authorization") String header, @RequestBody String newPassword) throws ServletException {
 		if(jwtservice.userExist(header) == null) {
 			return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
