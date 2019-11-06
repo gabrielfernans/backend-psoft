@@ -1,6 +1,7 @@
 package com.psoft.project.entities;
 
 import java.sql.Date;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -12,6 +13,7 @@ import javax.validation.constraints.NotBlank;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.psoft.project.repositories.CommentRepository;
 import com.psoft.project.repositories.LikeRepository;
+
 
 @Entity
 public class Campaign {
@@ -36,12 +38,12 @@ public class Campaign {
 	@NotBlank(message = "{user.not.blank}")
 	@OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)
 	private User owner;
+	@OneToMany(targetEntity = Comment.class, fetch = FetchType.EAGER)
 	@NotBlank(message = "{comments.not.blank}")
-	@OneToMany(targetEntity = CommentRepository.class, fetch = FetchType.EAGER)
-	private CommentRepository<Comment, Integer> comments;
+	private List<Comment> comments;
+	@OneToMany(targetEntity = Like.class, fetch = FetchType.EAGER)
 	@NotBlank(message = "{likes.not.blank}")
-	@OneToMany(targetEntity = LikeRepository.class, fetch = FetchType.EAGER)
-	private LikeRepository<Like, User> likes;
+	private List<Like> likes;
 	
 	public Campaign(Integer id, String name, String urlId, String description, Date deadLine, String status,
 			Double goal, Double donations, User owner) {
@@ -61,21 +63,23 @@ public class Campaign {
 	}
 	
 	public Long addLike(User user) {
-		Like like = new Like(user);
-		likes.save(like);
-		return likes.count();
+//		Like like = new Like(user);
+//		likes.save(like);
+//		return likes.count();
+		return (long) 1.0;
 	}
 	
 	public Long deleteLike(User user) {
-		if(likes.findById(user)!= null)
-			likes.deleteById(user);
-		return likes.count();
+//		if(likes.findById(user)!= null)
+//			likes.deleteById(user);
+//		return likes.count();
+		return (long) 1.0;
 	}
 	
-	public Comment addComment(String comment, User user) {
-		Comment c = new Comment(comment, user);
-		comments.save(c);
-		return c;
+	public void addComment(String comment, User user) {
+//		Comment c = new Comment(comment, user);
+//		comments.save(c);
+//		return c;
 	}
 	
 	
