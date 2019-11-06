@@ -83,5 +83,13 @@ public class Campaign {
 //		return c;
 	}
 	
+	public String getName() {
+		return this.name;
+	}
+	
+	public String getStatus() {
+		return this.status;
+	}
+	
 	
 }
