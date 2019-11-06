@@ -11,9 +11,6 @@ import javax.persistence.OneToOne;
 import javax.validation.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.psoft.project.repositories.CommentRepository;
-import com.psoft.project.repositories.LikeRepository;
-
 
 @Entity
 public class Campaign {
@@ -36,14 +33,14 @@ public class Campaign {
 	@NotBlank(message = "{donation.not.blank}")
 	private Double donations;
 	@NotBlank(message = "{user.not.blank}")
-	@OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)
+	@OneToOne(targetEntity = User.class, fetch = FetchType.LAZY)
 	private User owner;
-	@OneToMany(targetEntity = Comment.class, fetch = FetchType.EAGER)
-	@NotBlank(message = "{comments.not.blank}")
+	@OneToMany(targetEntity = Comment.class, fetch = FetchType.LAZY)
+	//@NotBlank(message = "{comments.not.blank}")
 	private List<Comment> comments;
-	@OneToMany(targetEntity = Like.class, fetch = FetchType.EAGER)
-	@NotBlank(message = "{likes.not.blank}")
-	private List<Like> likes;
+	@OneToMany(targetEntity = User.class, fetch = FetchType.LAZY)
+	//@NotBlank(message = "{likes.not.blank}")
+	private List<User> likes;
 	
 	public Campaign(Integer id, String name, String urlId, String description, Date deadLine, String status,
 			Double goal, Double donations, User owner) {
