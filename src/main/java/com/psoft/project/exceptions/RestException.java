@@ -7,6 +7,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
@@ -22,6 +23,12 @@ public class RestException extends ResponseEntityExceptionHandler{
 	     ErrorResponse errorResponse = getErrorResponse(ex, status, errors);
 	     return new ResponseEntity<>(errorResponse, status);
 	 }
+	 
+	 @ExceptionHandler(InvalidDateException.class)
+	 public ResponseEntity<Object> handleNotFoundException(InvalidDateException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+		 	
+		    return new ResponseEntity<>(ex.getMessage(), status);
+		  }
 	
 	private List<ObjectError> getErrors(MethodArgumentNotValidException ex){
 		return ex.getBindingResult().getFieldErrors().stream()

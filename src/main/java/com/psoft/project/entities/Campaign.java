@@ -12,6 +12,7 @@ import javax.validation.constraints.NotBlank;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.psoft.project.exceptions.InvalidDateException;
 
 @Entity
 public class Campaign {
@@ -51,7 +52,7 @@ public class Campaign {
 		this.urlId = urlId;
 		this.description = description;
 		if(!LocalDate.now().isBefore(deadLine))
-			throw new IllegalArgumentException("deadLine deve ser valido");
+			throw new InvalidDateException("deadLine deve ser valido");
 		this.deadLine = deadLine;
 		this.status = status;
 		this.goal = goal;
