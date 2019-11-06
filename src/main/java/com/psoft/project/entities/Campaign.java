@@ -1,6 +1,6 @@
 package com.psoft.project.entities;
 
-import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotBlank;
+
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -25,7 +26,7 @@ public class Campaign {
 	private String description;
 	@NotBlank(message = "{date.not.blank}")
 	@JsonFormat(pattern="yyyy-MM-dd")
-    private Date deadLine;
+    private LocalDate deadLine;
 	@NotBlank(message = "{status.not.blank}")
 	private String status;
 	@NotBlank(message = "{goal.not.blank}")
@@ -42,13 +43,15 @@ public class Campaign {
 	//@NotBlank(message = "{likes.not.blank}")
 	private List<User> likes;
 	
-	public Campaign(Integer id, String name, String urlId, String description, Date deadLine, String status,
+	public Campaign(Integer id, String name, String urlId, String description, LocalDate deadLine, String status,
 			Double goal, Double donations, User owner) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.urlId = urlId;
 		this.description = description;
+		if(!LocalDate.now().isBefore(deadLine))
+			throw new IllegalArgumentException("deadLine deve ser valido");
 		this.deadLine = deadLine;
 		this.status = status;
 		this.goal = goal;
