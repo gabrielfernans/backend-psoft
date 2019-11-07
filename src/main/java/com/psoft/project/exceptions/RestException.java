@@ -1,12 +1,16 @@
 package com.psoft.project.exceptions;
 
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageConversionException;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -27,15 +31,10 @@ public class RestException extends ResponseEntityExceptionHandler{
 	 
 	 @ExceptionHandler(InvalidDateException.class)
 	 public ResponseEntity<Object> handleNotFoundException(InvalidDateException ex) {
-		 	
-		 return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+		 ErrorResponse errorResponse = getErrorResponse(ex,  HttpStatus.BAD_REQUEST, new ArrayList<ObjectError>());
+		 return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
 	 }
 	 
-	 @ExceptionHandler(DateTimeParseException.class)
-	 public ResponseEntity<Object> handleNotFoundException(DateTimeParseException ex) {
-		 	
-		 return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
-	 }
 	
 	private List<ObjectError> getErrors(MethodArgumentNotValidException ex){
 		return ex.getBindingResult().getFieldErrors().stream()
@@ -48,7 +47,10 @@ public class RestException extends ResponseEntityExceptionHandler{
 	                status.getReasonPhrase(), ex.getBindingResult().getObjectName(), errors);
 	}
 	
-	
+	private ErrorResponse getErrorResponse(InvalidDateException ex, HttpStatus status, List<ObjectError> errors) {
+        return new ErrorResponse("Requisição possui campos inválidos", status.value(),
+                status.getReasonPhrase(), ex.getMessage(), errors);
+	}
 	
 	@AllArgsConstructor
 	public class ErrorResponse {

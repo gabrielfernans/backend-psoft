@@ -60,7 +60,7 @@ public class Campaign {
 		}catch(DateTimeParseException e) {
 			throw new InvalidDateException("deadLine deve ser valido");
 		}
-		if(!LocalDate.now().isBefore(d))
+		if(d.isBefore(LocalDate.now()))
 			throw new InvalidDateException("deadLine deve ser valido");
 		this.deadLine = d;
 		this.status = status;
