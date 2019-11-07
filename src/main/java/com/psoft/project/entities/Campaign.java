@@ -31,13 +31,13 @@ public class Campaign {
 	@NotNull(message = "{deadLine.not.blank}")
 	@JsonFormat(pattern="yyyy-MM-dd")
     private LocalDate deadLine;
-	@NotBlank(message = "{status.not.blank}")
+	//@NotBlank(message = "{status.not.blank}")
 	private String status;
 	@NotNull(message = "{goal.not.blank}")
 	private Double goal;
-	@NotNull(message = "{donations.not.blank}")
+	//@NotNull(message = "{donations.not.blank}")
 	private Double donations;
-	@NotNull(message = "{owner.not.blank}")
+	//@NotNull(message = "{owner.not.blank}")
 	@OneToOne(targetEntity = User.class, fetch = FetchType.LAZY)
 	private User owner;
 	@OneToMany(targetEntity = Comment.class, fetch = FetchType.LAZY)
@@ -47,8 +47,8 @@ public class Campaign {
 	//@NotBlank(message = "{likes.not.blank}")
 	private List<User> likes;
 	
-	public Campaign(int id, String name, String urlId, String description, String deadLine, String status,
-			Double goal, User owner) {
+	public Campaign(int id, String name, String urlId, String description, String deadLine,
+			Double goal) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -63,10 +63,9 @@ public class Campaign {
 		if(d.isBefore(LocalDate.now()))
 			throw new InvalidDateException("deadLine deve ser valido");
 		this.deadLine = d;
-		this.status = status;
+		this.status = "Ativa";
 		this.goal = goal;
 		this.donations = 0.0;
-		this.owner = owner;
 	}
 
 	public Integer getId() {
