@@ -1,5 +1,6 @@
 package com.psoft.project.exceptions;
 
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,10 +26,16 @@ public class RestException extends ResponseEntityExceptionHandler{
 	 }
 	 
 	 @ExceptionHandler(InvalidDateException.class)
-	 public ResponseEntity<Object> handleNotFoundException(InvalidDateException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+	 public ResponseEntity<Object> handleNotFoundException(InvalidDateException ex) {
 		 	
-		    return new ResponseEntity<>(ex.getMessage(), status);
-		  }
+		 return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+	 }
+	 
+	 @ExceptionHandler(DateTimeParseException.class)
+	 public ResponseEntity<Object> handleNotFoundException(DateTimeParseException ex) {
+		 	
+		 return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+	 }
 	
 	private List<ObjectError> getErrors(MethodArgumentNotValidException ex){
 		return ex.getBindingResult().getFieldErrors().stream()

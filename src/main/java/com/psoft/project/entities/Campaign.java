@@ -54,14 +54,14 @@ public class Campaign {
 		this.name = name;
 		this.urlId = urlId;
 		this.description = description;
-		LocalDate d = LocalDate.parse(deadLine); ;
-		/*try {
+		LocalDate d;
+		try {
 			d = LocalDate.parse(deadLine); 
 		}catch(DateTimeParseException e) {
 			throw new InvalidDateException("deadLine deve ser valido");
 		}
 		if(!LocalDate.now().isBefore(d))
-			throw new InvalidDateException("deadLine deve ser valido");*/
+			throw new InvalidDateException("deadLine deve ser valido");
 		this.deadLine = d;
 		this.status = status;
 		this.goal = goal;
