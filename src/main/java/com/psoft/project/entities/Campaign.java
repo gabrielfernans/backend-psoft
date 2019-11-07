@@ -88,7 +88,7 @@ public class Campaign {
 	}
 	
 	public String getStatus() {
-		return this.status;
+		return this.status;ur!
 	}
 	
 	
