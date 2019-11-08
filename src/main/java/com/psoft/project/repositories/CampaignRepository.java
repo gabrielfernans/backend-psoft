@@ -5,10 +5,9 @@ import java.io.Serializable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.psoft.project.entities.User;
+import com.psoft.project.entities.Campaign;
 
 @Repository
-public interface UserRepository<T, ID extends Serializable> extends JpaRepository<User, String>{
-	
-	User findByEmail(String email);
+public interface CampaignRepository<T, ID extends Serializable> extends JpaRepository<Campaign, Integer> {
+
 }
