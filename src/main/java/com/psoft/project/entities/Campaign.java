@@ -180,5 +180,4 @@ public class Campaign {
 		this.likes = likes;
 	}
 	
-	
 }
