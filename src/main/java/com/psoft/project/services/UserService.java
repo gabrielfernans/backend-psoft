@@ -63,7 +63,7 @@ public class UserService {
 	
 	private void sendEmailVerificationToken(String email, String token) {
 		SimpleMailMessage message = new SimpleMailMessage();
-		String url = "/v1/api/users/password/edit?token=" + token;
+		String url = "/views/new-password.html?token=" + token;
 		String m = "Para redefinir a senha acesse o link abaixo ";
 		message.setText(m + "http://localhost:5500" + url);
 		message.setTo(email);
