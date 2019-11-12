@@ -26,13 +26,14 @@ import com.psoft.project.services.CampaignService;
 import com.psoft.project.services.JWTService;
 
 @RestController
+@RequestMapping("/campaigns")
 public class CampaignController {
 	@Autowired
 	private CampaignService campaignService;
 	@Autowired
 	private JWTService jwtservice;
 	
-	@PostMapping("/campaigns")
+	@PostMapping()
 	public ResponseEntity<Campaign> setCampaign(@RequestHeader("Authorization") String header, @RequestBody @Valid Campaign campaign) throws ServletException {
 		if(jwtservice.userExist(header) == null) {
 			return new ResponseEntity<Campaign>(HttpStatus.NOT_FOUND);
