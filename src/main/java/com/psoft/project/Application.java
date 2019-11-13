@@ -28,7 +28,11 @@ public class Application {
 	public FilterRegistrationBean corsFilter() {
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		CorsConfiguration config = new CorsConfiguration().applyPermitDefaultValues();
-		config.addAllowedMethod("http://localhost:8000");
+		//config.addAllowedMethod("http://localhost:8000");
+		//config.addAllowedOrigin(origin);
+		config.addAllowedMethod("*");
+		config.addAllowedHeader("*");
+		config.addAllowedOrigin("*");
 		source.registerCorsConfiguration("/**", config);
 		FilterRegistrationBean bean = new FilterRegistrationBean(new CorsFilter(source));
 		bean.setOrder(0);
