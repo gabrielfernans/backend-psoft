@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
@@ -15,6 +14,7 @@ import javax.validation.constraints.NotNull;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.psoft.project.exceptions.InvalidDateException;
 
 @Entity
@@ -31,20 +31,18 @@ public class Campaign {
 	@NotNull(message = "{deadLine.not.blank}")
 	@JsonFormat(pattern="yyyy-MM-dd")
     private LocalDate deadLine;
-	//@NotBlank(message = "{status.not.blank}")
 	private String status;
 	@NotNull(message = "{goal.not.blank}")
 	private Double goal;
-	//@NotNull(message = "{donations.not.blank}")
 	private Double donations;
-	//@NotNull(message = "{owner.not.blank}")
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 	@OneToOne(targetEntity = User.class, fetch = FetchType.LAZY)
 	private User owner;
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 	@OneToMany(targetEntity = Comment.class, fetch = FetchType.LAZY)
-	//@NotBlank(message = "{comments.not.blank}")
 	private List<Comment> comments;
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 	@OneToMany(targetEntity = User.class, fetch = FetchType.LAZY)
-	//@NotBlank(message = "{likes.not.blank}")
 	private List<User> likes;
 	
 	public Campaign(int id, String name, String urlId, String description, String deadLine,
@@ -100,7 +98,7 @@ public class Campaign {
 		return donations;
 	}
 
-	@OneToOne(cascade = CascadeType.ALL, mappedBy = "owner")
+	//@OneToOne(cascade = CascadeType.ALL, mappedBy = "owner")
 	public User getOwner() {
 		return owner;
 	}

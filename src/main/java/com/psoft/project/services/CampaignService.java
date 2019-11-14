@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.psoft.project.entities.Campaign;
-import com.psoft.project.entities.User;
 import com.psoft.project.exceptions.InvalidDateException;
 import com.psoft.project.repositories.CampaignRepository;
 
@@ -52,7 +51,9 @@ public class CampaignService {
 		return resp;
 	}
 	
-	
+	public Campaign findByUrlId(String url) {
+		return this.campaigns.findByUrlId(url);
+	}
 	
 	
 	
