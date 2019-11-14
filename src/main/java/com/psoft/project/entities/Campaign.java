@@ -15,6 +15,7 @@ import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.psoft.project.exceptions.InvalidDateException;
 
 @Entity
@@ -100,6 +101,8 @@ public class Campaign {
 
 	//@OneToOne(cascade = CascadeType.ALL, mappedBy = "owner")
 	public User getOwner() {
+		this.owner.setPassword("");
+		this.owner.setCredCard("");
 		return owner;
 	}
 

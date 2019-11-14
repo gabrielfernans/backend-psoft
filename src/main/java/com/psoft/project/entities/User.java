@@ -8,6 +8,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
 
 
 @Entity
@@ -28,7 +29,6 @@ public class User implements Serializable{
 	@JsonIgnore
 	@NotBlank(message = "{credCard.not.blank}")
 	private String credCard;
-	@JsonIgnore
 	@NotBlank(message = "{password.not.blank}")
 	private String password;
 	

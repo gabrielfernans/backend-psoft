@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 
-
 import com.psoft.project.entities.Campaign;
 import com.psoft.project.entities.User;
 import com.psoft.project.services.CampaignService;
@@ -62,10 +61,23 @@ public class CampaignController {
 	}
 	
 	@GetMapping("/{url}")
-	public ResponseEntity<Campaign> getCampaignByURL(@RequestHeader("Authorization") String header, @PathVariable("url") String url) {
-		Campaign campaign = this.campaignService.findByUrlId(url);
-		if(campaign == null) return new ResponseEntity<Campaign>( HttpStatus.NOT_FOUND);
-		return new ResponseEntity<Campaign>(this.campaignService.findByUrlId(url), HttpStatus.OK);
+	public ResponseEntity<Campaign> getCampaignByURL(@RequestHeader("Authorization") String header, @PathVariable("url") String url) throws ServletException {
+		if(jwtservice.userExist(header) == null) {
+			return new ResponseEntity<Campaign>(HttpStatus.NOT_FOUND);
+		}try {
+			User user = jwtservice.userExist(header); 
+			if(jwtservice.userHasPermission(header, user.getEmail())) {
+				Campaign campaign = this.campaignService.findByUrlId(url);
+				if(campaign == null) return new ResponseEntity<Campaign>( HttpStatus.NOT_FOUND);
+				return new ResponseEntity<Campaign>(this.campaignService.findByUrlId(url), HttpStatus.OK);
+			}
+		}catch(ServletException s){
+			//usuario esta com codigo invalido ou vencido
+			return new ResponseEntity<Campaign>(HttpStatus.FORBIDDEN);
+		}//usuario nao tem permissao
+		return new ResponseEntity<Campaign>(HttpStatus.UNAUTHORIZED);
+		
+		
 	}
 
 }
