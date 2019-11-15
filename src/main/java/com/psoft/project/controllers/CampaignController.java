@@ -53,9 +53,15 @@ public class CampaignController {
 	}
 	
 	@GetMapping()
-	//metodo para buscar as campanhas no repositorio que possuem uma substring no nome e status parametrizado pelo usuario
-	//caso o usuario nao busque por nenhum status, por default, o metodo busca pelos status ativos
-	//isso esta sendo tratado no frontend
+	/**
+	 * metodo para buscar as campanhas no repositorio que possuem uma substring no nome e status parametrizado pelo usuario
+	 * caso o usuario nao busque por nenhum status, por default, o metodo busca pelos status ativos
+	 * isso esta sendo tratado no frontend
+	 * 
+	 * @param str Substring
+	 * @param status Status da campanha
+	 * @return
+	 */
 	public ResponseEntity<List<Campaign>> getCampaign(@RequestBody @Valid String str, String[] status) {
 			return new ResponseEntity<List<Campaign>>(campaignService.searchCampaign(str, status), HttpStatus.OK);
 	}

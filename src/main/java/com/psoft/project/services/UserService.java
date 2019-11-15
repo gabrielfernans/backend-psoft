@@ -71,8 +71,10 @@ public class UserService {
 	}
 
 	private void sendEmail(String email) {
+		String url = "http://localhost:5500/views";
 		SimpleMailMessage message = new SimpleMailMessage();
-		message.setText("Seja bem-vindo ao AJUDE! <LINK> para primeiro acesso");
+		message.setText("Seja bem-vindo ao AJUDE! Para acessar o site acesse o seguinte link: " 
+						+ url);
 		message.setTo(email);
 		emailSender.send(message);	
 	}

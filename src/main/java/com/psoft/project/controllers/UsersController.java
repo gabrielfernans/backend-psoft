@@ -38,8 +38,13 @@ public class UsersController {
 			return new ResponseEntity<User>(HttpStatus.CONFLICT);
 	}
 	
-	//Procura por um usuário no repositório a partir de um email fornecido.
-	//retorna 404 se não encontrar, retorna o usuário e 200 se encontrar.
+	/**
+	 * Procura por um usuario no repositorio a partir de um email fornecido.
+	 * retorna 404 se nao encontrar, retorna o usuario e 200 se encontrar.
+	 * 
+	 * @param email E-mail do usuario
+	 * @return Retorna um usuário
+	 */
 	@GetMapping()
 	public ResponseEntity<User> getUser(@RequestBody @Valid String email) {
 		User tempUser = userService.getUser(email);
