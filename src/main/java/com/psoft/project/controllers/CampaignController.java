@@ -122,7 +122,7 @@ public class CampaignController {
 		}try {
 			User user = jwtservice.userExist(header); 
 			if(jwtservice.userHasPermission(header, user.getEmail())) {
-				Campaign campaign = this.campaignService.addLikeByURL(user, url);
+				Campaign campaign = this.campaignService.addDislikeByURL(user, url);
 				if(campaign == null) return new ResponseEntity<Campaign>( HttpStatus.NOT_FOUND);
 				return new ResponseEntity<Campaign>(campaign, HttpStatus.OK);
 			}
