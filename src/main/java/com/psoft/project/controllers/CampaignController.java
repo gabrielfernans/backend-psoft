@@ -43,7 +43,6 @@ public class CampaignController {
 			if(jwtservice.userHasPermission(header, user.getEmail())) {
 				campaign.setOwner(user);
 				campaign.setStatus("Ativa");
-				campaign.setDonations(0.0);
 				return new ResponseEntity<Campaign>(campaignService.setCampaign(campaign), HttpStatus.OK);
 			}
 		}catch(ServletException s){

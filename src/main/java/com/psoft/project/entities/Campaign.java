@@ -124,31 +124,10 @@ public class Campaign {
 
 	public Campaign() {
 	}
-	
-	public int addLike(User user) {
-		if(likes.contains(user)) {
-			likes.remove(user);
-		}else if(!dislikes.contains(user)) likes.add(user);
-		return likes.size();
-	}
-	
-	public int addDislike(User user) {
-		if(dislikes.contains(user)) {
-			dislikes.remove(user);
-		}else if(!likes.contains(user)) dislikes.add(user);
-		return dislikes.size();
-	}
-	
-	public void addComment(String comment, User user) {
-//		Comment c = new Comment(comment, user);
-//		comments.save(c);
-//		return c;
-	}
 
 	public void setId(Integer id) {
 		this.id = id;
 	}
-
 
 	public void setName(String name) {
 		this.name = name;
@@ -192,6 +171,35 @@ public class Campaign {
 
 	public void setDislikes(List<User> dislikes) {
 		this.dislikes = dislikes;
+	}
+	
+	public int addLike(User user) {
+		if(likes.contains(user)) {
+			likes.remove(user);
+		}else if(!dislikes.contains(user)) likes.add(user);
+		return likes.size();
+	}
+	
+	public int addDislike(User user) {
+		if(dislikes.contains(user)) {
+			dislikes.remove(user);
+		}else if(!likes.contains(user)) dislikes.add(user);
+		return dislikes.size();
+	}
+	
+	public void addComment(String comment, User user) {
+//		Comment c = new Comment(comment, user);
+//		comments.save(c);
+//		return c;
+	}
+	
+	public Donation addDonation(User user, Double value) {
+		Donation d = null;
+		if(value > 0) {
+			d = new Donation(LocalDate.now(), value, user, this);
+			donations.add(d);
+		}
+		return d;		
 	}
 	
 }
