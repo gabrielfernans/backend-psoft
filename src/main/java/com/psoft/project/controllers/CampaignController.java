@@ -115,6 +115,22 @@ public class CampaignController {
 		return new ResponseEntity<Campaign>(HttpStatus.UNAUTHORIZED);
 	}
 	
-	
+	@PutMapping("/dislike/{url}")
+	public ResponseEntity<Campaign> addDislikeByURL(@RequestHeader("Authorization") String header, @PathVariable("url") String url) throws ServletException {
+		if(jwtservice.userExist(header) == null) {
+			return new ResponseEntity<Campaign>(HttpStatus.NOT_FOUND);
+		}try {
+			User user = jwtservice.userExist(header); 
+			if(jwtservice.userHasPermission(header, user.getEmail())) {
+				Campaign campaign = this.campaignService.addLikeByURL(user, url);
+				if(campaign == null) return new ResponseEntity<Campaign>( HttpStatus.NOT_FOUND);
+				return new ResponseEntity<Campaign>(campaign, HttpStatus.OK);
+			}
+		}catch(ServletException s){
+			//usuario esta com codigo invalido ou vencido
+			return new ResponseEntity<Campaign>(HttpStatus.FORBIDDEN);
+		}//usuario nao tem permissao
+		return new ResponseEntity<Campaign>(HttpStatus.UNAUTHORIZED);
+	}
 	
 }
