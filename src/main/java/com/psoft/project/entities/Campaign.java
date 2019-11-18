@@ -123,16 +123,15 @@ public class Campaign {
 	public int addLike(User user) {
 		if(likes.contains(user)) {
 			likes.remove(user);
-			dislikes.add(user);
 		}else likes.add(user);
 		return likes.size();
 	}
 	
-	public Long deleteLike(User user) {
-//		if(likes.findById(user)!= null)
-//			likes.deleteById(user);
-//		return likes.count();
-		return (long) 1.0;
+	public int addDislike(User user) {
+		if(dislikes.contains(user)) {
+			dislikes.remove(user);
+		}else dislikes.add(user);
+		return dislikes.size();
 	}
 	
 	public void addComment(String comment, User user) {
