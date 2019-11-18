@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -69,15 +70,31 @@ public class CampaignController {
 			if(jwtservice.userHasPermission(header, user.getEmail())) {
 				Campaign campaign = this.campaignService.findByUrlId(url);
 				if(campaign == null) return new ResponseEntity<Campaign>( HttpStatus.NOT_FOUND);
-				return new ResponseEntity<Campaign>(this.campaignService.findByUrlId(url), HttpStatus.OK);
+				return new ResponseEntity<Campaign>(campaign, HttpStatus.OK);
 			}
 		}catch(ServletException s){
 			//usuario esta com codigo invalido ou vencido
 			return new ResponseEntity<Campaign>(HttpStatus.FORBIDDEN);
 		}//usuario nao tem permissao
 		return new ResponseEntity<Campaign>(HttpStatus.UNAUTHORIZED);
-		
-		
+	}
+	
+	@PutMapping("/{url}")
+	public ResponseEntity<Campaign> finishCampaignByURL(@RequestHeader("Authorization") String header, @PathVariable("url") String url) throws ServletException {
+		if(jwtservice.userExist(header) == null) {
+			return new ResponseEntity<Campaign>(HttpStatus.NOT_FOUND);
+		}try {
+			User user = jwtservice.userExist(header); 
+			if(jwtservice.userHasPermission(header, user.getEmail())) {
+				Campaign campaign = this.campaignService.finishCampaignByURL(user, url);
+				if(campaign == null) return new ResponseEntity<Campaign>( HttpStatus.NOT_FOUND);
+				return new ResponseEntity<Campaign>(campaign, HttpStatus.OK);
+			}
+		}catch(ServletException s){
+			//usuario esta com codigo invalido ou vencido
+			return new ResponseEntity<Campaign>(HttpStatus.FORBIDDEN);
+		}//usuario nao tem permissao
+		return new ResponseEntity<Campaign>(HttpStatus.UNAUTHORIZED);
 	}
 
 }

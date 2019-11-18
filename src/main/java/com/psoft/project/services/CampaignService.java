@@ -2,12 +2,19 @@ package com.psoft.project.services;
 
 import java.time.LocalDate;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.ServletException;
+
 import com.psoft.project.entities.Campaign;
+import com.psoft.project.entities.User;
 import com.psoft.project.exceptions.InvalidDateException;
 import com.psoft.project.repositories.CampaignRepository;
 
@@ -55,6 +62,13 @@ public class CampaignService {
 		return this.campaigns.findByUrlId(url);
 	}
 	
-	
+	public Campaign finishCampaignByURL(User user, String url){
+		Campaign c = this.campaigns.findByUrlId(url);
+		if(c.getOwner().getEmail().equals(user.getEmail())) {
+			c.setStatus("Encerrada");
+			this.campaigns.save(c);
+		}
+		return c;
+	}
 	
 }

@@ -101,8 +101,8 @@ public class Campaign {
 
 	//@OneToOne(cascade = CascadeType.ALL, mappedBy = "owner")
 	public User getOwner() {
-		this.owner.setPassword("");
-		this.owner.setCredCard("");
+		//this.owner.setPassword("");
+		//this.owner.setCredCard("");
 		return owner;
 	}
 
