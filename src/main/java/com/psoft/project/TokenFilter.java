@@ -27,9 +27,8 @@ public class TokenFilter extends GenericFilterBean{
 			throws IOException, ServletException {
 
 		HttpServletRequest req = (HttpServletRequest) request;
-
+		System.out.println("\n\nAAA" + "\n\n");
 		String header = req.getHeader("Authorization");
-
 		if (header == null || !header.startsWith("Bearer ")) {
 			throw new ServletException("Token inexistente ou mal formatado!");
 		}
@@ -38,7 +37,7 @@ public class TokenFilter extends GenericFilterBean{
 		String token = header.substring(TOKEN_INDEX);
 
 		try {
-			Jwts.parser().setSigningKey("login valido").parseClaimsJws(token).getBody();
+			Jwts.parser().setSigningKey("valid token").parseClaimsJws(token).getBody();
 		} catch(SignatureException | ExpiredJwtException | MalformedJwtException | PrematureJwtException | UnsupportedJwtException | IllegalArgumentException e) {
 			
 			//aqui optamos por tratar todas as exceções que podem ser lançadas da mesma forma e simplesmente

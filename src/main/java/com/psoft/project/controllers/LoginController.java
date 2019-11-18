@@ -17,7 +17,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 @RestController
 public class LoginController {
 	
-	public final static String TOKEN_KEY = "login valido";
+	public final static String TOKEN_KEY = "valid login";
 	
 	private UserService uService;
 	

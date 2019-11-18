@@ -2,10 +2,16 @@ package com.psoft.project.services;
 
 import java.time.LocalDate;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.servlet.ServletException;
 
 import com.psoft.project.entities.Campaign;
 import com.psoft.project.entities.User;
@@ -52,8 +58,44 @@ public class CampaignService {
 		return resp;
 	}
 	
+	public Campaign findByUrlId(String url) {
+		return this.campaigns.findByUrlId(url);
+	}
 	
+	public Campaign finishCampaignByURL(User user, String url){
+		Campaign c = this.campaigns.findByUrlId(url);
+		if(c!= null && c.getOwner().getEmail().equals(user.getEmail())) {
+			c.setStatus("Encerrada");
+			this.campaigns.save(c);
+		}
+		return c;
+	}
 	
+	public Campaign addLikeByURL(User user, String url){
+		Campaign c = this.campaigns.findByUrlId(url);
+		if(c != null) {
+			c.addLike(user);
+			this.campaigns.save(c);
+		}
+		return c;
+	}
 	
+	public Campaign addDislikeByURL(User user, String url){
+		Campaign c = this.campaigns.findByUrlId(url);
+		if(c != null) {
+			c.addDislike(user);
+			this.campaigns.save(c);
+		}
+		return c;
+	}
+	
+	public Campaign addDonation(User user, String url, Double value){
+		Campaign c = this.campaigns.findByUrlId(url);
+		if(c != null) {
+			c.addDonation(user, value);
+			this.campaigns.save(c);
+		}
+		return c;
+	}
 	
 }

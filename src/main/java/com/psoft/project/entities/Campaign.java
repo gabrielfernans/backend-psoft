@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
@@ -15,6 +14,8 @@ import javax.validation.constraints.NotNull;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.psoft.project.exceptions.InvalidDateException;
 
 @Entity
@@ -31,21 +32,24 @@ public class Campaign {
 	@NotNull(message = "{deadLine.not.blank}")
 	@JsonFormat(pattern="yyyy-MM-dd")
     private LocalDate deadLine;
-	//@NotBlank(message = "{status.not.blank}")
 	private String status;
 	@NotNull(message = "{goal.not.blank}")
 	private Double goal;
-	//@NotNull(message = "{donations.not.blank}")
-	private Double donations;
-	//@NotNull(message = "{owner.not.blank}")
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+	@OneToMany(targetEntity = Donation.class, fetch = FetchType.LAZY)
+	private List<Donation> donations;
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 	@OneToOne(targetEntity = User.class, fetch = FetchType.LAZY)
 	private User owner;
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 	@OneToMany(targetEntity = Comment.class, fetch = FetchType.LAZY)
-	//@NotBlank(message = "{comments.not.blank}")
 	private List<Comment> comments;
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 	@OneToMany(targetEntity = User.class, fetch = FetchType.LAZY)
-	//@NotBlank(message = "{likes.not.blank}")
 	private List<User> likes;
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+	@OneToMany(targetEntity = User.class, fetch = FetchType.LAZY)
+	private List<User> dislikes;
 	
 	public Campaign(int id, String name, String urlId, String description, String deadLine,
 			Double goal) {
@@ -65,7 +69,6 @@ public class Campaign {
 		this.deadLine = d;
 		this.status = "Ativa";
 		this.goal = goal;
-		this.donations = 0.0;
 	}
 
 	public Integer getId() {
@@ -96,12 +99,14 @@ public class Campaign {
 		return goal;
 	}
 
-	public Double getDonations() {
+	public List<Donation> getDonations() {
 		return donations;
 	}
 
-	@OneToOne(cascade = CascadeType.ALL, mappedBy = "owner")
+	//@OneToOne(cascade = CascadeType.ALL, mappedBy = "owner")
 	public User getOwner() {
+		//this.owner.setPassword("");
+		//this.owner.setCredCard("");
 		return owner;
 	}
 
@@ -112,34 +117,17 @@ public class Campaign {
 	public List<User> getLikes() {
 		return likes;
 	}
+	
+	public List<User> getDislikes() {
+		return dislikes;
+	}
 
 	public Campaign() {
-	}
-	
-	public Long addLike(User user) {
-//		Like like = new Like(user);
-//		likes.save(like);
-//		return likes.count();
-		return (long) 1.0;
-	}
-	
-	public Long deleteLike(User user) {
-//		if(likes.findById(user)!= null)
-//			likes.deleteById(user);
-//		return likes.count();
-		return (long) 1.0;
-	}
-	
-	public void addComment(String comment, User user) {
-//		Comment c = new Comment(comment, user);
-//		comments.save(c);
-//		return c;
 	}
 
 	public void setId(Integer id) {
 		this.id = id;
 	}
-
 
 	public void setName(String name) {
 		this.name = name;
@@ -165,7 +153,7 @@ public class Campaign {
 		this.goal = goal;
 	}
 
-	public void setDonations(Double donations) {
+	public void setDonations(List<Donation> donations) {
 		this.donations = donations;
 	}
 
@@ -179,6 +167,39 @@ public class Campaign {
 
 	public void setLikes(List<User> likes) {
 		this.likes = likes;
+	}
+
+	public void setDislikes(List<User> dislikes) {
+		this.dislikes = dislikes;
+	}
+	
+	public int addLike(User user) {
+		if(likes.contains(user)) {
+			likes.remove(user);
+		}else if(!dislikes.contains(user)) likes.add(user);
+		return likes.size();
+	}
+	
+	public int addDislike(User user) {
+		if(dislikes.contains(user)) {
+			dislikes.remove(user);
+		}else if(!likes.contains(user)) dislikes.add(user);
+		return dislikes.size();
+	}
+	
+	public void addComment(String comment, User user) {
+//		Comment c = new Comment(comment, user);
+//		comments.save(c);
+//		return c;
+	}
+	
+	public Donation addDonation(User user, Double value) {
+		Donation d = null;
+		if(value > 0) {
+			d = new Donation(LocalDate.now(), value, user, this);
+			donations.add(d);
+		}
+		return d;		
 	}
 	
 }

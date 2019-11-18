@@ -20,7 +20,7 @@ public class Application {
 	public FilterRegistrationBean<TokenFilter> filterJwt() {
 		FilterRegistrationBean<TokenFilter> filterRB = new FilterRegistrationBean<TokenFilter>();
 		filterRB.setFilter(new TokenFilter());
-		filterRB.addUrlPatterns( "");
+		filterRB.addUrlPatterns("/v1/api/campaigns/*");
 		return filterRB;
 	}
 	
