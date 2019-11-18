@@ -10,6 +10,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+import com.psoft.project.entities.Donation;
 import com.psoft.project.entities.User;
 import com.psoft.project.entities.VerificationToken;
 import com.psoft.project.repositories.UserRepository;
@@ -102,10 +103,4 @@ public class UserService {
 		return users.getOne(email);
 		
 	}
-
-	
-	
-	
-	
-	
 }
