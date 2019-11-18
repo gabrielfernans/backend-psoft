@@ -35,7 +35,9 @@ public class Campaign {
 	private String status;
 	@NotNull(message = "{goal.not.blank}")
 	private Double goal;
-	private Double donations;
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+	@OneToMany(targetEntity = Donation.class, fetch = FetchType.LAZY)
+	private List<Donation> donations;
 	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 	@OneToOne(targetEntity = User.class, fetch = FetchType.LAZY)
 	private User owner;
@@ -67,7 +69,6 @@ public class Campaign {
 		this.deadLine = d;
 		this.status = "Ativa";
 		this.goal = goal;
-		this.donations = 0.0;
 	}
 
 	public Integer getId() {
@@ -98,7 +99,7 @@ public class Campaign {
 		return goal;
 	}
 
-	public Double getDonations() {
+	public List<Donation> getDonations() {
 		return donations;
 	}
 
@@ -173,7 +174,7 @@ public class Campaign {
 		this.goal = goal;
 	}
 
-	public void setDonations(Double donations) {
+	public void setDonations(List<Donation> donations) {
 		this.donations = donations;
 	}
 
