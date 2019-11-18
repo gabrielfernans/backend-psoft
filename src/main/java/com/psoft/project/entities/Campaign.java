@@ -117,11 +117,10 @@ public class Campaign {
 	public Campaign() {
 	}
 	
-	public Long addLike(User user) {
-//		Like like = new Like(user);
-//		likes.save(like);
-//		return likes.count();
-		return (long) 1.0;
+	public int addLike(User user) {
+		if(likes.contains(user)) {
+		}else likes.add(user);
+		return likes.size();
 	}
 	
 	public Long deleteLike(User user) {
