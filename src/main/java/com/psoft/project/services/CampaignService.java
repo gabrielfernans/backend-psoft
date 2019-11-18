@@ -37,7 +37,7 @@ public class CampaignService {
 	}
 	
 	//Retorna uma lista de campanhas que contem uma determinada substring.
-	public List<Campaign> searchCampaign(String str, String[] status) {
+	public List<Campaign> getCampaignBySubstring(String str, String[] status) {
 		List<Campaign> resp = new ArrayList<Campaign>();
 		List<Campaign> tempList = campaigns.findAll();
 		
