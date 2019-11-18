@@ -73,7 +73,10 @@ public class CampaignService {
 	
 	public Campaign addLikeByURL(User user, String url){
 		Campaign c = this.campaigns.findByUrlId(url);
-		c.addLike(user);
+		if(c != null) {
+			c.addLike(user);
+			this.campaigns.save(c);
+		}
 		return c;
 	}
 	
