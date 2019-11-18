@@ -116,6 +116,10 @@ public class Campaign {
 	public List<User> getLikes() {
 		return likes;
 	}
+	
+	public List<User> getDislikes() {
+		return dislikes;
+	}
 
 	public Campaign() {
 	}
@@ -183,6 +187,10 @@ public class Campaign {
 
 	public void setLikes(List<User> likes) {
 		this.likes = likes;
+	}
+
+	public void setDislikes(List<User> dislikes) {
+		this.dislikes = dislikes;
 	}
 	
 }
