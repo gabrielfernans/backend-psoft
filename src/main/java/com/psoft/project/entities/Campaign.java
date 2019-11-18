@@ -123,14 +123,14 @@ public class Campaign {
 	public int addLike(User user) {
 		if(likes.contains(user)) {
 			likes.remove(user);
-		}else likes.add(user);
+		}else if(!dislikes.contains(user)) likes.add(user);
 		return likes.size();
 	}
 	
 	public int addDislike(User user) {
 		if(dislikes.contains(user)) {
 			dislikes.remove(user);
-		}else dislikes.add(user);
+		}else if(!likes.contains(user)) dislikes.add(user);
 		return dislikes.size();
 	}
 	
