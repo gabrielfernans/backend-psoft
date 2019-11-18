@@ -45,6 +45,9 @@ public class Campaign {
 	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 	@OneToMany(targetEntity = User.class, fetch = FetchType.LAZY)
 	private List<User> likes;
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+	@OneToMany(targetEntity = User.class, fetch = FetchType.LAZY)
+	private List<User> dislikes;
 	
 	public Campaign(int id, String name, String urlId, String description, String deadLine,
 			Double goal) {
@@ -120,6 +123,7 @@ public class Campaign {
 	public int addLike(User user) {
 		if(likes.contains(user)) {
 			likes.remove(user);
+			dislikes.add(user);
 		}else likes.add(user);
 		return likes.size();
 	}
