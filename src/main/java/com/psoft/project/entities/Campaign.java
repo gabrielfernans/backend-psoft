@@ -119,6 +119,7 @@ public class Campaign {
 	
 	public int addLike(User user) {
 		if(likes.contains(user)) {
+			likes.remove(user);
 		}else likes.add(user);
 		return likes.size();
 	}
