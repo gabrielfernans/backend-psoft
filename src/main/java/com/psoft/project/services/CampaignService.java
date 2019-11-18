@@ -80,4 +80,13 @@ public class CampaignService {
 		return c;
 	}
 	
+	public Campaign addDislikeByURL(User user, String url){
+		Campaign c = this.campaigns.findByUrlId(url);
+		if(c != null) {
+			c.addDislike(user);
+			this.campaigns.save(c);
+		}
+		return c;
+	}
+	
 }
