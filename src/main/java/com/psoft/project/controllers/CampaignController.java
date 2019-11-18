@@ -2,6 +2,7 @@ package com.psoft.project.controllers;
 
 import javax.servlet.ServletException;
 
+import java.time.LocalDate;
 import java.util.List;
 
 
@@ -62,7 +63,7 @@ public class CampaignController {
 	 * @param status Status da campanha
 	 * @return
 	 */
-	public ResponseEntity<List<Campaign>> getCampaignBySubstring(@RequestHeader("Authorization") String header, @RequestBody String str, String[] status) throws ServletException {
+	public ResponseEntity<List<Campaign>> getCampaignBySubstring(@RequestHeader("Authorization") String header, @RequestBody @Valid String str, String[] status) throws ServletException {
 		if(jwtservice.userExist(header) == null) {
 			return new ResponseEntity<List<Campaign>>(HttpStatus.NOT_FOUND);
 		} try {
@@ -163,6 +164,24 @@ public class CampaignController {
 			//usuario esta com codigo invalido ou vencido
 			return new ResponseEntity<Campaign>(HttpStatus.FORBIDDEN);
 		}//usuario nao tem permissao
+		return new ResponseEntity<Campaign>(HttpStatus.UNAUTHORIZED);
+	}
+	
+	//método para atualizar a deadline de uma campanha, faz checagem se o usuario esta logado e devidamente autorizado.
+	@PutMapping("/deadline/{url}")
+	public ResponseEntity<Campaign> updateDeadline(@RequestHeader("Authorization") String header, @PathVariable("url") String url, @RequestBody LocalDate newDate) throws ServletException{
+		if(jwtservice.userExist(header) == null)
+			return new ResponseEntity<Campaign>(HttpStatus.NOT_FOUND);
+		try {
+			User user = jwtservice.userExist(header);
+			if(jwtservice.userHasPermission(header, user.getEmail())) {
+				Campaign campaign = this.campaignService.updateDeadline(user, url, newDate);
+				if(campaign == null) return new ResponseEntity<Campaign>(HttpStatus.BAD_REQUEST);
+				return new ResponseEntity<Campaign>(campaign, HttpStatus.OK);
+			}
+		} catch(ServletException s) {
+			return new ResponseEntity<Campaign>(HttpStatus.FORBIDDEN);
+		}
 		return new ResponseEntity<Campaign>(HttpStatus.UNAUTHORIZED);
 	}
 	
