@@ -658,3 +658,9 @@ Caused by: org.h2.jdbc.JdbcSQLNonTransientConnectionException: The connection wa
 	at org.h2.message.DbException.getJdbcSQLException(DbException.java:617)
 	at org.h2.message.DbException.getJdbcSQLException(DbException.java:427)
 	... 81 more
+2019-11-17 23:43:41 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "DELETE *[*] FROM CAMPAIGN_LIKES"; expected "identifier"; SQL statement:
+DELETE * FROM CAMPAIGN_LIKES [42001-199]
+2019-11-17 23:44:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "DELETE *[*] FROM CAMPAIGN_LIKES"; expected "identifier"; SQL statement:
+DELETE * FROM CAMPAIGN_LIKES [42001-199]

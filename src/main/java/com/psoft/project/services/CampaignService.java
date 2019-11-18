@@ -64,7 +64,7 @@ public class CampaignService {
 	
 	public Campaign finishCampaignByURL(User user, String url){
 		Campaign c = this.campaigns.findByUrlId(url);
-		if(c.getOwner().getEmail().equals(user.getEmail())) {
+		if(c!= null && c.getOwner().getEmail().equals(user.getEmail())) {
 			c.setStatus("Encerrada");
 			this.campaigns.save(c);
 		}
