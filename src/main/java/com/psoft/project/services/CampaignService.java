@@ -89,10 +89,10 @@ public class CampaignService {
 		return c;
 	}
 	
-	public Campaign addDonation(User user, String url){
+	public Campaign addDonation(User user, String url, Double value){
 		Campaign c = this.campaigns.findByUrlId(url);
 		if(c != null) {
-			c.addDislike(user);
+			c.addDonation(user, value);
 			this.campaigns.save(c);
 		}
 		return c;

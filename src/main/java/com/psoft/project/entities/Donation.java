@@ -7,11 +7,13 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.OneToOne;
+import javax.validation.constraints.NotBlank;
 
 @Entity
 public class Donation {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private LocalDate date;
+	@NotBlank(message = "{value.not.blank}")
 	private Double value;
 	@OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)
 	private User owner;
