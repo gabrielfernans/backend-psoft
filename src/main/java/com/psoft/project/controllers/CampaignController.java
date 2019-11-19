@@ -139,13 +139,13 @@ public class CampaignController {
 	}
 	
 	@PutMapping("/donation/{url}")
-	public ResponseEntity<Campaign> addDonation(@RequestHeader("Authorization") String header, @PathVariable("url") String url, @RequestBody Double value) throws ServletException {
+	public ResponseEntity<Campaign> addDonation(@RequestHeader("Authorization") String header, @PathVariable("url") String url, @RequestBody String value) throws ServletException {
 		if(jwtservice.userExist(header) == null) {
 			return new ResponseEntity<Campaign>(HttpStatus.NOT_FOUND);
 		}try {
 			User user = jwtservice.userExist(header); 
 			if(jwtservice.userHasPermission(header, user.getEmail())) {
-				Campaign campaign = this.campaignService.addDonation(user, url, value);
+				Campaign campaign = this.campaignService.addDonation(user, url, Double.valueOf(value));
 				if(campaign == null) return new ResponseEntity<Campaign>( HttpStatus.NOT_FOUND);
 				return new ResponseEntity<Campaign>(campaign, HttpStatus.OK);
 			}
@@ -154,6 +154,12 @@ public class CampaignController {
 			return new ResponseEntity<Campaign>(HttpStatus.FORBIDDEN);
 		}//usuario nao tem permissao
 		return new ResponseEntity<Campaign>(HttpStatus.UNAUTHORIZED);
+	}
+	
+	//pega o top 5 de campanhas ativas
+	@GetMapping("/actives")
+	public ResponseEntity<List<Campaign>> getCampaignByDonations() throws ServletException {
+		return new ResponseEntity<List<Campaign>>(campaignService.getActivesCampaigns(), HttpStatus.OK);
 	}
 	
 }

@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
@@ -11,11 +12,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonView;
 import com.psoft.project.exceptions.InvalidDateException;
 
 @Entity
@@ -35,8 +33,9 @@ public class Campaign {
 	private String status;
 	@NotNull(message = "{goal.not.blank}")
 	private Double goal;
+	//@JsonManagedReference
 	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-	@OneToMany(targetEntity = Donation.class, fetch = FetchType.LAZY)
+	@OneToMany(cascade = CascadeType.ALL, targetEntity = Donation.class, fetch = FetchType.LAZY)
 	private List<Donation> donations;
 	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 	@OneToOne(targetEntity = User.class, fetch = FetchType.LAZY)
@@ -194,12 +193,12 @@ public class Campaign {
 	}
 	
 	public Donation addDonation(User user, Double value) {
-		Donation d = null;
+		Donation d = new Donation(LocalDate.now(), value, user);
 		if(value > 0) {
-			d = new Donation(LocalDate.now(), value, user, this);
-			donations.add(d);
+			donations.add(d);			
+			return d;
 		}
-		return d;		
+		return null;		
 	}
 	
 }

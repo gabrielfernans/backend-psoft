@@ -92,10 +92,16 @@ public class CampaignService {
 	public Campaign addDonation(User user, String url, Double value){
 		Campaign c = this.campaigns.findByUrlId(url);
 		if(c != null) {
-			c.addDonation(user, value);
+			if(c.addDonation(user, value) == null ) return null;
 			this.campaigns.save(c);
 		}
 		return c;
 	}
+	
+	public List<Campaign> getActivesCampaigns(){
+		return campaigns.findAll();
+	}
+	
+	
 	
 }
