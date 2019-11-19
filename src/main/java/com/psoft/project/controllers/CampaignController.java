@@ -62,8 +62,18 @@ public class CampaignController {
 	 * @param status Status da campanha
 	 * @return
 	 */
-	public ResponseEntity<List<Campaign>> getCampaign(@RequestBody @Valid String str, String[] status) {
-			return new ResponseEntity<List<Campaign>>(campaignService.searchCampaign(str, status), HttpStatus.OK);
+	public ResponseEntity<List<Campaign>> getCampaignBySubstring(@RequestHeader("Authorization") String header, @RequestBody String str, String[] status) throws ServletException {
+		if(jwtservice.userExist(header) == null) {
+			return new ResponseEntity<List<Campaign>>(HttpStatus.NOT_FOUND);
+		} try {
+			User user = jwtservice.userExist(header);
+			if(jwtservice.userHasPermission(header, user.getEmail())) {
+				return new ResponseEntity<List<Campaign>>(campaignService.getCampaignBySubstring(str, status), HttpStatus.OK);
+			}
+		}catch(ServletException s) {
+			return new ResponseEntity<List<Campaign>>(HttpStatus.FORBIDDEN);
+		}
+		return new ResponseEntity<List<Campaign>>(HttpStatus.UNAUTHORIZED);
 	}
 	
 	@GetMapping("/{url}")
