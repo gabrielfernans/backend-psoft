@@ -150,4 +150,10 @@ public class CampaignController {
 		return new ResponseEntity<Campaign>(HttpStatus.UNAUTHORIZED);
 	}
 	
+	//pega o top 5 de campanhas ativas
+	@GetMapping("/bydonation")
+	public ResponseEntity<List<Campaign>> getCampaignByDonations() throws ServletException {
+		return new ResponseEntity<List<Campaign>>(campaignService.getActivesCampaigns(), HttpStatus.OK);
+	}
+	
 }

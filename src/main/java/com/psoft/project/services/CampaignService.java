@@ -98,4 +98,10 @@ public class CampaignService {
 		return c;
 	}
 	
+	public List<Campaign> getActivesCampaigns(){
+		return campaigns.findAllByDonation();
+	}
+	
+	
+	
 }

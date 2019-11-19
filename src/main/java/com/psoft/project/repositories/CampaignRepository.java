@@ -1,6 +1,7 @@
 package com.psoft.project.repositories;
 
 import java.io.Serializable;
+import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -14,4 +15,16 @@ public interface CampaignRepository<T, ID extends Serializable> extends JpaRepos
 	
 	//@Query(value = "select c from Campaign where c.urlid = url")
 	Campaign findByUrlId(String url);
+	
+	//retorna as campanhas ordenadas pelos likes 
+	@Query(value = "select u from Campaign u order by u.likes DESC, u.id ASC")
+	public List<Campaign> findAllByLikes();
+	
+	//retorna as campanhas ordenadas pelos likes 
+	@Query(value = "select u from Campaign u order by u.deadLine DESC, u.id ASC")
+	public List<Campaign> findAllByDeadLine();
+	
+	//retorna as campanhas ordenadas pelos likes 
+	@Query(value = "select u from Campaign u order by sum(u.donations.value) ASC, u.id DESC")
+	public List<Campaign> findAllByDonation();
 }
