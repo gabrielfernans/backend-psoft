@@ -133,13 +133,13 @@ public class CampaignController {
 	}
 	
 	@PutMapping("/donation/{url}")
-	public ResponseEntity<Campaign> addDonation(@RequestHeader("Authorization") String header, @PathVariable("url") String url, @RequestBody Double value) throws ServletException {
+	public ResponseEntity<Campaign> addDonation(@RequestHeader("Authorization") String header, @PathVariable("url") String url, @RequestBody String value) throws ServletException {
 		if(jwtservice.userExist(header) == null) {
 			return new ResponseEntity<Campaign>(HttpStatus.NOT_FOUND);
 		}try {
 			User user = jwtservice.userExist(header); 
 			if(jwtservice.userHasPermission(header, user.getEmail())) {
-				Campaign campaign = this.campaignService.addDonation(user, url, value);
+				Campaign campaign = this.campaignService.addDonation(user, url, Double.valueOf(value));
 				if(campaign == null) return new ResponseEntity<Campaign>( HttpStatus.NOT_FOUND);
 				return new ResponseEntity<Campaign>(campaign, HttpStatus.OK);
 			}

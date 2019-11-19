@@ -6,63 +6,62 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 public class Donation {
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@JoinColumn(name="donation_id")
+	private int id;
+	@NotNull()
 	private LocalDate date;
-	@NotBlank(message = "{value.not.blank}")
+	@NotNull(message = "{value.not.blank}")
 	private Double value;
-	@OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)
-	private User owner;
-	@OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)
-	private Campaign campaign;
-	
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+	@OneToOne(targetEntity = User.class, fetch = FetchType.LAZY)
+	private User donor;	
 	
 	public Donation() {
 		super();
 	}
 	
-	public Donation(LocalDate date, Double value, User owner, Campaign campaign) {
+	public Donation(LocalDate date, Double value, User owner) {
 		super();
 		this.date = date;
 		this.value = value;
-		this.owner = owner;
-		this.campaign = campaign;
+		this.donor = owner;
 	}
 	
 	public LocalDate getDate() {
 		return date;
 	}
 	
-	public void setDate(LocalDate date) {
-		this.date = date;
-	}
-	
 	public Double getValue() {
 		return value;
+	}
+	
+	public User getDonor() {
+		return donor;
+	}
+	
+	public Integer getIdDonation() {
+		return id;
+	}
+	
+	public void setDate(LocalDate date) {
+		this.date = date;
 	}
 	
 	public void setValue(Double value) {
 		this.value = value;
 	}
 	
-	public User getOwner() {
-		return owner;
-	}
-	
 	public void setOwner(User owner) {
-		this.owner = owner;
+		this.donor = owner;
 	}
-	
-	public Campaign getCampaign() {
-		return campaign;
-	}
-	
-	public void setCampaign(Campaign campaign) {
-		this.campaign = campaign;
-	}
-	
 }
