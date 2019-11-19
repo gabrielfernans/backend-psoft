@@ -17,14 +17,6 @@ public interface CampaignRepository<T, ID extends Serializable> extends JpaRepos
 	Campaign findByUrlId(String url);
 	
 	//retorna as campanhas ordenadas pelos likes 
-	@Query(value = "select u from Campaign u order by u.likes DESC, u.id ASC")
-	public List<Campaign> findAllByLikes();
-	
-	//retorna as campanhas ordenadas pelos likes 
-	@Query(value = "select u from Campaign u order by u.deadLine DESC, u.id ASC")
-	public List<Campaign> findAllByDeadLine();
-	
-	//retorna as campanhas ordenadas pelos likes 
-	@Query(value = "select u from Campaign u order by sum(u.donations.value) ASC, u.id DESC")
-	public List<Campaign> findAllByDonation();
+	@Query(value = "select u from Campaign u where u.status = 'Ativa' order by u.likes DESC, u.id ASC")
+	public List<Campaign> findAllByStatus();
 }

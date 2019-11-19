@@ -99,7 +99,7 @@ public class CampaignService {
 	}
 	
 	public List<Campaign> getActivesCampaigns(){
-		return campaigns.findAllByDonation();
+		return campaigns.findAllByStatus();
 	}
 	
 	

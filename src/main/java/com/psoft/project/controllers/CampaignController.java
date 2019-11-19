@@ -151,7 +151,7 @@ public class CampaignController {
 	}
 	
 	//pega o top 5 de campanhas ativas
-	@GetMapping("/bydonation")
+	@GetMapping("/actives")
 	public ResponseEntity<List<Campaign>> getCampaignByDonations() throws ServletException {
 		return new ResponseEntity<List<Campaign>>(campaignService.getActivesCampaigns(), HttpStatus.OK);
 	}
