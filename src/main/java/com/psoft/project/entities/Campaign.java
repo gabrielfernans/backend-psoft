@@ -2,6 +2,7 @@ package com.psoft.project.entities;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -36,7 +37,7 @@ public class Campaign {
 	//@JsonManagedReference
 	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 	@OneToMany(cascade = CascadeType.ALL, targetEntity = Donation.class, fetch = FetchType.LAZY)
-	private List<Donation> donations;
+	private List<Donation> donations = new ArrayList<Donation>();
 	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 	@OneToOne(targetEntity = User.class, fetch = FetchType.LAZY)
 	private User owner;

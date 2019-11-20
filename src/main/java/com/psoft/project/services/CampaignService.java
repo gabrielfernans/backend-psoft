@@ -102,9 +102,11 @@ public class CampaignService {
 		return campaigns.findAllCampaignsByStatus();
 	}
 	
-	public List<Campaign> getCampaignsByDonor(String email){
-		return campaigns.findAll();
+	public List<Campaign> getCampaignsByDonor(User user){
+		return campaigns.findAllCampaignsByDonations_Donor(user);
 	}
 	
-	
+	public List<Campaign> getCampaignsByOwner(String email){
+		return campaigns.findAllCampaignsByOwner(email);
+	}
 }

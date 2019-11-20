@@ -25,6 +25,7 @@ import com.psoft.project.entities.Campaign;
 import com.psoft.project.entities.User;
 import com.psoft.project.services.CampaignService;
 import com.psoft.project.services.JWTService;
+import com.psoft.project.services.UserService;
 
 @RestController
 @RequestMapping("/campaigns")
@@ -33,7 +34,13 @@ public class CampaignController {
 	private CampaignService campaignService;
 	@Autowired
 	private JWTService jwtservice;
+	private UserService uservice;
 	
+	public CampaignController(UserService uservice) {
+		super();
+		this.uservice = uservice;
+	}
+
 	@PostMapping()
 	public ResponseEntity<Campaign> setCampaign(@RequestHeader("Authorization") String header, @RequestBody @Valid Campaign campaign) throws ServletException {
 		if(jwtservice.userExist(header) == null) {
@@ -173,9 +180,23 @@ public class CampaignController {
 	}
 	
 	//get todas as campanhas que um usuario realizou alguma doacao
-	@GetMapping("/{email}")
+	@GetMapping("/donations/{email}")
 	public ResponseEntity<List<Campaign>> getCampaignByDonor(@PathVariable("email") String email) throws ServletException {		
-		return new ResponseEntity<List<Campaign>>(campaignService.getCampaignsByDonor(email), HttpStatus.OK);
+		User u = uservice.getUser(email);
+		if(u != null) {
+			return new ResponseEntity<List<Campaign>>(campaignService.getCampaignsByDonor(u), HttpStatus.OK);
+		}
+		return new ResponseEntity<List<Campaign>>( HttpStatus.NOT_FOUND);
 	}
+	
+	//get todas as campanhas que um usuario realizou alguma doacao
+		@GetMapping("/campaign/{email}")
+		public ResponseEntity<List<Campaign>> getCampaignByOwner(@PathVariable("email") String email) throws ServletException {		
+			User u = uservice.getUser(email);
+			if(u != null) {
+				return new ResponseEntity<List<Campaign>>(campaignService.getCampaignsByOwner(email), HttpStatus.OK);
+			}
+			return new ResponseEntity<List<Campaign>>( HttpStatus.NOT_FOUND);
+		}
 	
 }
