@@ -8,7 +8,10 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotBlank;
@@ -19,8 +22,8 @@ import com.psoft.project.exceptions.InvalidDateException;
 
 @Entity
 public class Campaign {
-	@NotNull(message = "{id.not.blank}")
 	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 	@NotBlank(message = "{name.not.blank}")
 	private String name;
@@ -51,10 +54,9 @@ public class Campaign {
 	@OneToMany(targetEntity = User.class, fetch = FetchType.LAZY)
 	private List<User> dislikes;
 	
-	public Campaign(int id, String name, String urlId, String description, String deadLine,
+	public Campaign(String name, String urlId, String description, String deadLine,
 			Double goal) {
 		super();
-		this.id = id;
 		this.name = name;
 		this.urlId = urlId;
 		this.description = description;
