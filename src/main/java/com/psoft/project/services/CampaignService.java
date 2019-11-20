@@ -151,7 +151,7 @@ public class CampaignService {
 	public Campaign deleteComment(User user, String url, String idComment) {
 		Campaign c = this.campaigns.findByUrlId(url);
 		Comment com = this.comments.findByidComment(idComment);
-		if(c != null && !com.isDeleted()) {
+		if(c != null && !com.isDeleted() && com.getUser().getEmail().equals(user.getEmail())) {
 			com.deleteComment();
 			this.comments.save(com);
 			this.campaigns.save(c);
