@@ -172,4 +172,10 @@ public class CampaignController {
 		return new ResponseEntity<List<Campaign>>(campaignService.getActivesCampaigns(), HttpStatus.OK);
 	}
 	
+	//get todas as campanhas que um usuario realizou alguma doacao
+	@GetMapping("/{email}")
+	public ResponseEntity<List<Campaign>> getCampaignByDonor(@PathVariable("email") String email) throws ServletException {		
+		return new ResponseEntity<List<Campaign>>(campaignService.getCampaignsByDonor(email), HttpStatus.OK);
+	}
+	
 }

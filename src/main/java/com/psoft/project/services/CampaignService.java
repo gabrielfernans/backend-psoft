@@ -99,9 +99,12 @@ public class CampaignService {
 	}
 	
 	public List<Campaign> getActivesCampaigns(){
-		return campaigns.findAll();
+		return campaigns.findAllCampaignsByStatus();
 	}
 	
+	public List<Campaign> getCampaignsByDonor(String email){
+		return campaigns.findAll();
+	}
 	
 	
 }
