@@ -14,6 +14,7 @@ import java.util.List;
 import javax.servlet.ServletException;
 
 import com.psoft.project.entities.Campaign;
+import com.psoft.project.entities.Comment;
 import com.psoft.project.entities.User;
 import com.psoft.project.exceptions.InvalidDateException;
 import com.psoft.project.repositories.CampaignRepository;
@@ -117,6 +118,15 @@ public class CampaignService {
 		Campaign c = this.campaigns.findByUrlId(url);
 		if(c != null && c.getDeadLine().isBefore(LocalDate.now()) && c.getOwner().getEmail().equals(user.getEmail())) {
 			c.setGoal(newGoal);
+			this.campaigns.save(c);
+		}
+		return c;
+	}
+	
+	public Campaign addComment(String url, User user, String comment) {
+		Campaign c = this.campaigns.findByUrlId(url);
+		if(c != null) {
+			c.addComment(comment, user, c);
 			this.campaigns.save(c);
 		}
 		return c;

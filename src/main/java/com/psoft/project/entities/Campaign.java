@@ -192,10 +192,10 @@ public class Campaign {
 		return dislikes.size();
 	}
 	
-	public void addComment(String comment, User user) {
-//		Comment c = new Comment(comment, user);
-//		comments.save(c);
-//		return c;
+	public Comment addComment(String comment, User user, Campaign campaign) {
+		Comment c = new Comment(comment, user, campaign);
+		comments.add(c);
+		return c;
 	}
 	
 	public Donation addDonation(User user, Double value) {

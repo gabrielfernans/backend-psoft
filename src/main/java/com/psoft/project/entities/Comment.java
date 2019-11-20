@@ -1,7 +1,6 @@
 package com.psoft.project.entities;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.LinkedList;
 
 import javax.persistence.Entity;
@@ -70,9 +69,10 @@ public class Comment {
 		return this.campaign;
 	}
 	
-	public Comment replyComment(Comment reply) {
-		this.replies.add(reply);
-		return reply;
+	public Comment replyComment(String reply) {
+		Comment c = new Comment(comment, user, campaign);
+		replies.add(c);
+		return c;
 	}
 	
 	
