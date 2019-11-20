@@ -39,7 +39,8 @@ public class Comment {
 	private List<Comment> replies;
 	@ManyToOne(targetEntity = Campaign.class, fetch = FetchType.EAGER)
 	private Campaign campaign;
-	
+	@NotNull(message = "isDeleted.not.blank}")
+	private Boolean isDeleted;
 	
 	public Comment() {
 	}
@@ -51,17 +52,25 @@ public class Comment {
 		this.campaign = campaign;
 		this.date = LocalDate.now();
 		this.replies = new LinkedList<Comment>();
+		this.isDeleted = false;
 	}
 
 	@Override
 	public String toString() {
-		return comment;
+		String resp = null;
+		if(!isDeleted())
+			resp = this.comment;
+		return resp;
 	}
 
 	public User getUser() {
 		return user;
 	}
 	
+	public Boolean isDeleted() {
+		return this.isDeleted;
+	}
+ 	
 	public String getUrlIdComment() {
 		return urlIdComment;
 	}
@@ -82,6 +91,10 @@ public class Comment {
 		Comment reply = new Comment(comment, user, campaign);
 		this.replies.add(reply);
 		return reply;
+	}
+	
+	public void deleteComment() {
+		this.isDeleted = true;
 	}
 	
 	

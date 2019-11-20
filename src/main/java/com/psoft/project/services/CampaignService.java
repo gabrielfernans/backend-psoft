@@ -147,5 +147,16 @@ public class CampaignService {
 		}
 		return c;
 	}
+	
+	public Campaign deleteComment(User user, String url, String idComment) {
+		Campaign c = this.campaigns.findByUrlId(url);
+		Comment com = this.comments.findByidComment(idComment);
+		if(c != null && !com.isDeleted()) {
+			com.deleteComment();
+			this.comments.save(com);
+			this.campaigns.save(c);
+		}
+		return c;
+	}
 
 }
