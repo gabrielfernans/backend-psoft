@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.psoft.project.entities.Campaign;
+import com.psoft.project.entities.Comment;
 import com.psoft.project.entities.User;
 import com.psoft.project.services.CampaignService;
 import com.psoft.project.services.JWTService;
@@ -225,6 +226,23 @@ public class CampaignController {
 			return new ResponseEntity<Campaign>(HttpStatus.FORBIDDEN);
 		}
 		return new ResponseEntity<Campaign>(HttpStatus.UNAUTHORIZED);
+	}
+	
+	@PutMapping("/comment/{url}")
+	public ResponseEntity<Comment> replyComment(@RequestHeader("Authorization") String header, @PathVariable("url") String url, @RequestBody String comment) throws ServletException {
+		if(jwtservice.userExist(header) == null)
+			return new ResponseEntity<Comment>(HttpStatus.NOT_FOUND);
+		try {
+			User user = jwtservice.userExist(header);
+			if(jwtservice.userHasPermission(header, user.getEmail())) {
+				Campaign campaign = this.campaignService.replyComment(url, user, comment);
+				if(campaign == null) return new ReponseEntity<Comment>(HttpStatus.BAD_REQUEST);
+				return new ResponseEntity<Comment>(campaign.getReply(), HttpStatus.OK);
+			}
+		} catch (ServletException s) {
+			return new ResponseEntity<Comment>(HttpStatus.FORBIDDEN);
+		}
+		return new ResponseEntity<Comment>(HttpStatus.UNAUTHORIZED);
 	}
 
 	
