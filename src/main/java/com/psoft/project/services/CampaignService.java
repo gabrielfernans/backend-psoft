@@ -158,5 +158,14 @@ public class CampaignService {
 		}
 		return c;
 	}
+	
+	public Campaign setDescription(User user, String url, String description) {
+		Campaign c = this.campaigns.findByUrlId(url);
+		if(c != null && c.getOwner().getEmail().equals(user.getEmail())) {
+			c.setDescription(description);
+			this.campaigns.save(c);
+		}
+		return c;
+	}
 
 }
