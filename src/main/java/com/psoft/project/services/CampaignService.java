@@ -131,10 +131,21 @@ public class CampaignService {
 	
 	public Campaign addComment(User user, String url, String comment) {
 		Campaign c = this.campaigns.findByUrlId(url);
-		if(c != null)
+		if(c != null) {
 			this.comments.save(c.addComment(user, comment));
 			this.campaigns.save(c);
+		}
 		return c;
 		}
+	
+	public Campaign replyComment(User user, String url, String comment, String idComment) {
+		Campaign c = this.campaigns.findByUrlId(url);
+		if(c != null) {
+			Comment reply = this.comments.findByidComment(idComment).addReply(user, comment, c);
+			this.comments.save(reply);
+			this.campaigns.save(c);
+		}
+		return c;
+	}
 
 }

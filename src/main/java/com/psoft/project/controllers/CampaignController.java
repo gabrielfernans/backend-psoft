@@ -211,7 +211,14 @@ public class CampaignController {
 		return new ResponseEntity<Campaign>(HttpStatus.UNAUTHORIZED);//usuario sem permissao
 	}
 	
-	
+	/**
+	 * Método para adicionar comentários a uma campanha, apenas se o usuário estiver logado e tiver a permissão.
+	 * @param header
+	 * @param url
+	 * @param comment
+	 * @return
+	 * @throws ServletException
+	 */
 	@PostMapping("/comment/{url}")
 	public ResponseEntity<Campaign> addCommentInCampaign(@RequestHeader("Authorization") String header, @PathVariable("url") String url, @RequestBody String comment) throws ServletException {
 		if(jwtservice.userExist(header) == null)
@@ -228,6 +235,32 @@ public class CampaignController {
 		}
 		return new ResponseEntity<Campaign>(HttpStatus.UNAUTHORIZED);
 	}
+	
+	/**
+	 * Método para adicionar comentários a um outro comentário. Somente se o usuário estiver logado e tiver permissão.
+	 * @param header
+	 * @param url
+	 * @param comment
+	 * @param idComment
+	 * @return
+	 * @throws ServletException
+	 */
+	@PostMapping("/comment/reply/{url}")
+	public ResponseEntity<Campaign> replyComment(@RequestHeader("Authorization") String header, @PathVariable("url") String url, @RequestBody String comment, @RequestBody String idComment) throws ServletException {
+		if(jwtservice.userExist(header) == null)
+			return new ResponseEntity<Campaign>(HttpStatus.NOT_FOUND);
+		try {
+			User user = jwtservice.userExist(header);
+			if(jwtservice.userHasPermission(header, user.getEmail())) {
+				Campaign campaign = this.campaignService.replyComment(user, url, comment, idComment);
+				if(campaign == null) return new ResponseEntity<Campaign>(HttpStatus.BAD_REQUEST);
+				return new ResponseEntity<Campaign>(campaign, HttpStatus.OK);
+			}
+		} catch (ServletException s) {
+			return new ResponseEntity<Campaign>(HttpStatus.FORBIDDEN);
+		}
+		return new ResponseEntity<Campaign>(HttpStatus.UNAUTHORIZED);
+	} 
 	
 	
 

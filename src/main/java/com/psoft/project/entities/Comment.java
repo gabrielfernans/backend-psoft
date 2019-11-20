@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -24,7 +25,10 @@ public class Comment {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
+	@NotBlank(message = "{description.not.blank}")
 	private String comment;
+	@NotBlank(message = "{urlId.not.blank}")
+	private String urlIdComment;
 	@OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)
 	private User user;
 	@NotNull(message = "{deadLine.not.blank}")
@@ -58,6 +62,10 @@ public class Comment {
 		return user;
 	}
 	
+	public String getUrlIdComment() {
+		return urlIdComment;
+	}
+	
 	public LocalDate getDate() {
 		return this.date;
 	}
@@ -68,6 +76,12 @@ public class Comment {
 	
 	public Campaign getCampaign() {
 		return this.campaign;
+	}
+	
+	public Comment addReply(User user, String comment, Campaign campaign) {
+		Comment reply = new Comment(comment, user, campaign);
+		this.replies.add(reply);
+		return reply;
 	}
 	
 	
