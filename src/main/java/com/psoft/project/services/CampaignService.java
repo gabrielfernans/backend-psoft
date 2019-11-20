@@ -2,6 +2,7 @@ package com.psoft.project.services;
 
 import java.time.LocalDate;
 
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.ServletException;
 
@@ -18,16 +20,20 @@ import com.psoft.project.entities.Comment;
 import com.psoft.project.entities.User;
 import com.psoft.project.exceptions.InvalidDateException;
 import com.psoft.project.repositories.CampaignRepository;
+import com.psoft.project.repositories.CommentRepository;
 
 @Service
 public class CampaignService {
 	
 	private CampaignRepository<Campaign, Integer> campaigns;
-
-	public CampaignService(CampaignRepository<Campaign, Integer> campaigns) {
+	private CommentRepository<Comment, Integer> comments;
+	
+	public CampaignService(CampaignRepository<Campaign, Integer> campaigns, CommentRepository<Comment, Integer> comments) {
 		super();
 		this.campaigns = campaigns;
+		this.comments = comments;
 	}
+	
 
 	public Campaign setCampaign(Campaign campaign) {
 		
@@ -123,16 +129,12 @@ public class CampaignService {
 		return c;
 	}
 	
-	public Campaign addComment(String url, User user, String comment) {
+	public Campaign addComment(User user, String url, String comment) {
 		Campaign c = this.campaigns.findByUrlId(url);
-		if(c != null) {
-			c.addComment(comment, user, c);
+		if(c != null)
+			this.comments.save(c.addComment(user, comment));
 			this.campaigns.save(c);
-		}
 		return c;
-	}
+		}
 
-	
-	
-	
 }

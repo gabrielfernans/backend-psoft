@@ -211,14 +211,15 @@ public class CampaignController {
 		return new ResponseEntity<Campaign>(HttpStatus.UNAUTHORIZED);//usuario sem permissao
 	}
 	
-	@PutMapping("/comment/{url}")
+	
+	@PostMapping("/comment/{url}")
 	public ResponseEntity<Campaign> addCommentInCampaign(@RequestHeader("Authorization") String header, @PathVariable("url") String url, @RequestBody String comment) throws ServletException {
 		if(jwtservice.userExist(header) == null)
 			return new ResponseEntity<Campaign>(HttpStatus.NOT_FOUND);
 		try {
 			User user = jwtservice.userExist(header);
 			if(jwtservice.userHasPermission(header, user.getEmail())) {
-				Campaign campaign = this.campaignService.addComment(url, user, comment);
+				Campaign campaign = this.campaignService.addComment(user, url, comment);
 				if(campaign == null) return new ResponseEntity<Campaign>(HttpStatus.BAD_REQUEST);
 				return new ResponseEntity<Campaign>(campaign, HttpStatus.OK);
 			}
@@ -228,22 +229,7 @@ public class CampaignController {
 		return new ResponseEntity<Campaign>(HttpStatus.UNAUTHORIZED);
 	}
 	
-	@PutMapping("/comment/{url}")
-	public ResponseEntity<Comment> replyComment(@RequestHeader("Authorization") String header, @PathVariable("url") String url, @RequestBody String comment) throws ServletException {
-		if(jwtservice.userExist(header) == null)
-			return new ResponseEntity<Comment>(HttpStatus.NOT_FOUND);
-		try {
-			User user = jwtservice.userExist(header);
-			if(jwtservice.userHasPermission(header, user.getEmail())) {
-				Campaign campaign = this.campaignService.replyComment(url, user, comment);
-				if(campaign == null) return new ReponseEntity<Comment>(HttpStatus.BAD_REQUEST);
-				return new ResponseEntity<Comment>(campaign.getReply(), HttpStatus.OK);
-			}
-		} catch (ServletException s) {
-			return new ResponseEntity<Comment>(HttpStatus.FORBIDDEN);
-		}
-		return new ResponseEntity<Comment>(HttpStatus.UNAUTHORIZED);
-	}
+	
 
 	
 }

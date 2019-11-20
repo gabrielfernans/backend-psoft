@@ -2,6 +2,7 @@ package com.psoft.project.entities;
 
 import java.time.LocalDate;
 import java.util.LinkedList;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -31,7 +32,7 @@ public class Comment {
 	private LocalDate date;
 	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 	@OneToMany(targetEntity = Comment.class, fetch = FetchType.LAZY)
-	private LinkedList<Comment> replies;
+	private List<Comment> replies;
 	@ManyToOne(targetEntity = Campaign.class, fetch = FetchType.EAGER)
 	private Campaign campaign;
 	
@@ -61,7 +62,7 @@ public class Comment {
 		return this.date;
 	}
 	
-	public LinkedList<Comment> getReplies() {
+	public List<Comment> getReplies() {
 		return this.replies;
 	}
 	
@@ -69,11 +70,7 @@ public class Comment {
 		return this.campaign;
 	}
 	
-	public Comment replyComment(String reply) {
-		Comment c = new Comment(comment, user, campaign);
-		replies.add(c);
-		return c;
-	}
+	
 	
 	
 }

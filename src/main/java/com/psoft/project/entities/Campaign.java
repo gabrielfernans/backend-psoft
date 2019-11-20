@@ -192,11 +192,6 @@ public class Campaign {
 		return dislikes.size();
 	}
 	
-	public Comment addComment(String comment, User user, Campaign campaign) {
-		Comment c = new Comment(comment, user, campaign);
-		comments.add(c);
-		return c;
-	}
 	
 	public Donation addDonation(User user, Double value) {
 		Donation d = new Donation(LocalDate.now(), value, user);
@@ -206,5 +201,13 @@ public class Campaign {
 		}
 		return null;		
 	}
+	
+	public Comment addComment(User user, String comment) {
+		Comment c = new Comment(comment, user, this);
+		this.comments.add(c);
+		return c;
+	}
+	
+	
 	
 }
