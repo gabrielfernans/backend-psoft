@@ -2,6 +2,7 @@ package com.psoft.project.controllers;
 
 import javax.servlet.ServletException;
 
+import java.time.LocalDate;
 import java.util.List;
 
 
@@ -179,6 +180,7 @@ public class CampaignController {
 		return new ResponseEntity<List<Campaign>>(campaignService.getActivesCampaigns(), HttpStatus.OK);
 	}
 	
+
 	//get todas as campanhas que um usuario realizou alguma doacao
 	@GetMapping("/donations/{email}")
 	public ResponseEntity<List<Campaign>> getCampaignByDonor(@PathVariable("email") String email) throws ServletException {		
@@ -198,5 +200,43 @@ public class CampaignController {
 			}
 			return new ResponseEntity<List<Campaign>>( HttpStatus.NOT_FOUND);
 		}
+
+	//método para atualizar a deadline de uma campanha, faz checagem se o usuario esta logado e devidamente autorizado.
+	@PutMapping("/deadline/{url}")
+	public ResponseEntity<Campaign> updateDeadline(@RequestHeader("Authorization") String header, @PathVariable("url") String url, @RequestBody LocalDate newDate) throws ServletException{
+			
+		if(jwtservice.userExist(header) == null)
+			return new ResponseEntity<Campaign>(HttpStatus.NOT_FOUND);
+		try {
+			User user = jwtservice.userExist(header);
+			if(jwtservice.userHasPermission(header, user.getEmail())) {
+				Campaign campaign = this.campaignService.updateDeadline(user, url, newDate);
+				if(campaign == null) return new ResponseEntity<Campaign>(HttpStatus.BAD_REQUEST);
+				return new ResponseEntity<Campaign>(campaign, HttpStatus.OK);
+			}
+		} catch(ServletException s) {
+			return new ResponseEntity<Campaign>(HttpStatus.FORBIDDEN);
+		}
+		return new ResponseEntity<Campaign>(HttpStatus.UNAUTHORIZED);
+	}
+	
+	//método para alterar a meta da campanha, checando se o usuário está logado e devidamente autorizado.
+	@PutMapping("/goal/{url}")
+	public ResponseEntity<Campaign> updateGoal(@RequestHeader("Authorization") String header, @PathVariable("url") String url, @RequestBody Double newGoal) throws ServletException {
+		if(jwtservice.userExist(header) == null)
+			return new ResponseEntity<Campaign>(HttpStatus.NOT_FOUND);//usuário nao encontrado
+		try {
+			User user = jwtservice.userExist(header);
+			if(jwtservice.userHasPermission(header, user.getEmail())) {
+				Campaign campaign = this.campaignService.updateGoal(user, url, newGoal);
+				if(campaign == null) return new ResponseEntity<Campaign>(HttpStatus.BAD_REQUEST);//dados de parâmetro errados
+				return new ResponseEntity<Campaign>(campaign, HttpStatus.OK);//retorna a campanha com a nova meta
+			}
+		} catch (ServletException s) {
+			return new ResponseEntity<Campaign>(HttpStatus.FORBIDDEN);//token do usuario invalido ou vencido
+		}
+		return new ResponseEntity<Campaign>(HttpStatus.UNAUTHORIZED);//usuario sem permissao
+	}
+
 	
 }
