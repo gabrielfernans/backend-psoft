@@ -53,7 +53,7 @@ public class RestException extends ResponseEntityExceptionHandler{
 	}
 	
 	@AllArgsConstructor
-	public class FailResponse {
+	private class FailResponse {
 		public String message;
 	    public int code;
 	    public String status;
@@ -71,7 +71,7 @@ public class RestException extends ResponseEntityExceptionHandler{
 	}
 	
 	@AllArgsConstructor
-	public class ObjectFail {
+	private class ObjectFail {
 		public String message;
 		public String field;
 		public Object parameter;
