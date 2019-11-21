@@ -24,43 +24,43 @@ public class RestException extends ResponseEntityExceptionHandler{
 
 	 @Override
 	 protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-		 List<ObjectError> errors = getErrors(ex);
-	     ErrorResponse errorResponse = getErrorResponse(ex, status, errors);
+		 List<ObjectFail> errors = getErrors(ex);
+		 FailResponse errorResponse = getErrorResponse(ex, status, errors);
 	     return new ResponseEntity<>(errorResponse, status);
 	 }
 	 
 	 @ExceptionHandler(InvalidDateException.class)
 	 public ResponseEntity<Object> handleNotFoundException(InvalidDateException ex) {
-		 ErrorResponse errorResponse = getErrorResponse(ex,  HttpStatus.BAD_REQUEST, new ArrayList<ObjectError>());
+		 FailResponse errorResponse = getErrorResponse(ex,  HttpStatus.BAD_REQUEST, new ArrayList<ObjectFail>());
 		 return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
 	 }
 	 
 	
-	private List<ObjectError> getErrors(MethodArgumentNotValidException ex){
+	private List<ObjectFail> getErrors(MethodArgumentNotValidException ex){
 		return ex.getBindingResult().getFieldErrors().stream()
-				.map(error -> new ObjectError(error.getDefaultMessage(), error.getField(), error.getRejectedValue()))
+				.map(error -> new ObjectFail(error.getDefaultMessage(), error.getField(), error.getRejectedValue()))
 				.collect(Collectors.toList());
 	}
 	
-	private ErrorResponse getErrorResponse(MethodArgumentNotValidException ex, HttpStatus status, List<ObjectError> errors) {
-	        return new ErrorResponse("Requisição possui campos inválidos", status.value(),
+	private FailResponse getErrorResponse(MethodArgumentNotValidException ex, HttpStatus status, List<ObjectFail> errors) {
+	        return new FailResponse("Requisição possui campos inválidos", status.value(),
 	                status.getReasonPhrase(), ex.getBindingResult().getObjectName(), errors);
 	}
 	
-	private ErrorResponse getErrorResponse(InvalidDateException ex, HttpStatus status, List<ObjectError> errors) {
-        return new ErrorResponse("Requisição possui campos inválidos", status.value(),
+	private FailResponse getErrorResponse(InvalidDateException ex, HttpStatus status, List<ObjectFail> errors) {
+        return new FailResponse("Requisição possui campos inválidos", status.value(),
                 status.getReasonPhrase(), ex.getMessage(), errors);
 	}
 	
 	@AllArgsConstructor
-	public class ErrorResponse {
+	public class FailResponse {
 		public String message;
 	    public int code;
 	    public String status;
 	    public String objectName;
-	    public List<ObjectError> errors;
-	    public ErrorResponse(String message, int code, String status, String objectName,
-				List<ObjectError> errors) {
+	    public List<ObjectFail> errors;
+	    public FailResponse(String message, int code, String status, String objectName,
+				List<ObjectFail> errors) {
 	    	this.message = message;
 			this.code = code;
 			this.status = status;
@@ -71,12 +71,12 @@ public class RestException extends ResponseEntityExceptionHandler{
 	}
 	
 	@AllArgsConstructor
-	public class ObjectError {
+	public class ObjectFail {
 		public String message;
 		public String field;
 		public Object parameter;
 	    
-	    public ObjectError(String defaultMessage, String field2, Object rejectedValue) {
+	    public ObjectFail(String defaultMessage, String field2, Object rejectedValue) {
 			this.message = defaultMessage;
 			this.field = field2;
 			this.parameter = rejectedValue;
