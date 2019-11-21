@@ -59,6 +59,8 @@ public class RestException extends ResponseEntityExceptionHandler{
 	    public String status;
 	    public String objectName;
 	    public List<ObjectFail> errors;
+	    
+	    public FailResponse() {}
 	    public FailResponse(String message, int code, String status, String objectName,
 				List<ObjectFail> errors) {
 	    	this.message = message;
@@ -76,6 +78,8 @@ public class RestException extends ResponseEntityExceptionHandler{
 		public String field;
 		public Object parameter;
 	    
+		public ObjectFail() {}
+		
 	    public ObjectFail(String defaultMessage, String field2, Object rejectedValue) {
 			this.message = defaultMessage;
 			this.field = field2;
