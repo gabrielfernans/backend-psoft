@@ -80,5 +80,13 @@
 			</plugin>
 		</plugins>
 	</build>
+	
+	<distributionManagement>
+		<repository>
+		  <id>deply</id>
+		  <name>deploy</name>
+		  <url>file:./deploy</url>
+		</repository>
+	</distributionManagement>
 
 </project>

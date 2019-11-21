@@ -51,39 +51,4 @@ public class RestException extends ResponseEntityExceptionHandler{
         return new FailResponse("Requisição possui campos inválidos", status.value(),
                 status.getReasonPhrase(), ex.getMessage(), errors);
 	}
-	
-	@AllArgsConstructor
-	private class FailResponse {
-		public String message;
-	    public int code;
-	    public String status;
-	    public String objectName;
-	    public List<ObjectFail> errors;
-	    
-	    public FailResponse() {}
-	    public FailResponse(String message, int code, String status, String objectName,
-				List<ObjectFail> errors) {
-	    	this.message = message;
-			this.code = code;
-			this.status = status;
-			this.objectName = objectName;
-			this.errors = errors;
-		}
-	    
-	}
-	
-	@AllArgsConstructor
-	private class ObjectFail {
-		public String message;
-		public String field;
-		public Object parameter;
-	    
-		public ObjectFail() {}
-		
-	    public ObjectFail(String defaultMessage, String field2, Object rejectedValue) {
-			this.message = defaultMessage;
-			this.field = field2;
-			this.parameter = rejectedValue;
-		}
-	}
 }
