@@ -106,16 +106,17 @@ public class CampaignService {
 		return campaigns.findAllCampaignsByDonations_Donor(user);
 	}
 
+
 	//método para mudar a deadline da campanha apenas se a nova data estiver no futuro.
 	public Campaign updateDeadline(User user, String url, LocalDate newDate) {
 		Campaign c = this.campaigns.findByUrlId(url);
-		if(c != null && !newDate.isBefore(LocalDate.now())) {
+		if(c != null && newDate.isBefore(LocalDate.now())) {
 			c.setDeadLine(newDate);
 			this.campaigns.save(c);
 		}
 		return c;
 	}
-	
+
 	//método para alterar a meta de uma campanha, apenas se a data estiver no futuro e o usuário for o dono da campanha.
 	public Campaign updateGoal(User user, String url, Double newGoal) {
 		Campaign c = this.campaigns.findByUrlId(url);
@@ -129,4 +130,5 @@ public class CampaignService {
 	public List<Campaign> getCampaignsByOwner(String email){
 		return campaigns.findAllCampaignsByOwner(email);
 	}
+
 }

@@ -70,7 +70,7 @@ public class CampaignController {
 	 * @param status Status da campanha
 	 * @return
 	 */
-	public ResponseEntity<List<Campaign>> getCampaignBySubstring(@RequestHeader("Authorization") String header, @RequestBody String str, String[] status) throws ServletException {
+	public ResponseEntity<List<Campaign>> getCampaignBySubstring(@RequestHeader("Authorization") String header, @RequestBody @Valid String str, String[] status) throws ServletException {
 		if(jwtservice.userExist(header) == null) {
 			return new ResponseEntity<List<Campaign>>(HttpStatus.NOT_FOUND);
 		} try {
@@ -204,7 +204,6 @@ public class CampaignController {
 	//método para atualizar a deadline de uma campanha, faz checagem se o usuario esta logado e devidamente autorizado.
 	@PutMapping("/deadline/{url}")
 	public ResponseEntity<Campaign> updateDeadline(@RequestHeader("Authorization") String header, @PathVariable("url") String url, @RequestBody LocalDate newDate) throws ServletException{
-			
 		if(jwtservice.userExist(header) == null)
 			return new ResponseEntity<Campaign>(HttpStatus.NOT_FOUND);
 		try {
@@ -219,7 +218,7 @@ public class CampaignController {
 		}
 		return new ResponseEntity<Campaign>(HttpStatus.UNAUTHORIZED);
 	}
-	
+
 	//método para alterar a meta da campanha, checando se o usuário está logado e devidamente autorizado.
 	@PutMapping("/goal/{url}")
 	public ResponseEntity<Campaign> updateGoal(@RequestHeader("Authorization") String header, @PathVariable("url") String url, @RequestBody Double newGoal) throws ServletException {
@@ -238,5 +237,4 @@ public class CampaignController {
 		return new ResponseEntity<Campaign>(HttpStatus.UNAUTHORIZED);//usuario sem permissao
 	}
 
-	
 }
