@@ -12,7 +12,7 @@ import com.psoft.project.entities.Comment;
 
 @Repository
 public interface CommentRepository<T, ID extends Serializable> extends JpaRepository<Comment, Integer> {
-	
-	Comment findByidComment(String idComment);
-	
+	/*
+	Comment findById(Integer idComment);
+	*/
 }

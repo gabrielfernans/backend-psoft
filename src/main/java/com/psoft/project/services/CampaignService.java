@@ -143,7 +143,7 @@ public class CampaignService {
 	public Campaign replyComment(User user, String url, String comment, String idComment) {
 		Campaign c = this.campaigns.findByUrlId(url);
 		if(c != null) {
-			Comment reply = this.comments.findByidComment(idComment).addReply(user, comment, c);
+			Comment reply = this.comments.getOne(Integer.parseInt(idComment)).addReply(user, comment, c);
 			this.comments.save(reply);
 			this.campaigns.save(c);
 		}
@@ -152,7 +152,7 @@ public class CampaignService {
 	
 	public Campaign deleteComment(User user, String url, String idComment) {
 		Campaign c = this.campaigns.findByUrlId(url);
-		Comment com = this.comments.findByidComment(idComment);
+		Comment com = this.comments.getOne(Integer.parseInt(idComment));
 		if(c != null && !com.isDeleted() && com.getUser().getEmail().equals(user.getEmail())) {
 			com.deleteComment();
 			this.comments.save(com);

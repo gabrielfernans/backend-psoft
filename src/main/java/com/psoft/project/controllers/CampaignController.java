@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.psoft.project.entities.Campaign;
-import com.psoft.project.entities.Comment;
 import com.psoft.project.entities.User;
 import com.psoft.project.services.CampaignService;
 import com.psoft.project.services.JWTService;
