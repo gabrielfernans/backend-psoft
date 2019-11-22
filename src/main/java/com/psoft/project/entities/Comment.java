@@ -1,6 +1,7 @@
 package com.psoft.project.entities;
 
 import java.time.LocalDate;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -27,8 +28,6 @@ public class Comment {
 	private Integer id;
 	@NotBlank(message = "{description.not.blank}")
 	private String comment;
-	@NotBlank(message = "{urlId.not.blank}")
-	private String urlIdComment;
 	@OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)
 	private User user;
 	@NotNull(message = "{deadLine.not.blank}")
@@ -41,6 +40,8 @@ public class Comment {
 	private Campaign campaign;
 	@NotNull(message = "isDeleted.not.blank}")
 	private Boolean isDeleted;
+	
+	private Boolean isReply;
 	
 	public Comment() {
 	}
@@ -70,10 +71,6 @@ public class Comment {
 	public Boolean isDeleted() {
 		return this.isDeleted;
 	}
- 	
-	public String getUrlIdComment() {
-		return urlIdComment;
-	}
 	
 	public LocalDate getDate() {
 		return this.date;
@@ -87,15 +84,20 @@ public class Comment {
 		return this.campaign;
 	}
 	
-	public Comment addReply(User user, String comment, Campaign campaign) {
-		Comment reply = new Comment(comment, user, campaign);
-		this.replies.add(reply);
-		return reply;
-	}
 	
 	public void deleteComment() {
 		this.isDeleted = true;
 	}
+	
+	public void setCampaign(Campaign c) {
+		this.campaign = c;
+	}
+	
+	public void setUser(User u) {
+		this.user = u;
+	}
+	
+	
 	
 	
 	

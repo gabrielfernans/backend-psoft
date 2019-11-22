@@ -204,13 +204,4 @@ public class Campaign {
 		}
 		return null;		
 	}
-	
-	public Comment addComment(User user, String comment) {
-		Comment c = new Comment(comment, user, this);
-		this.comments.add(c);
-		return c;
-	}
-	
-	
-	
 }

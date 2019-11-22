@@ -36,25 +36,8 @@ public class CampaignService {
 	}
 	
 	//Retorna uma lista de campanhas que contem uma determinada substring.
-	public List<Campaign> getCampaignBySubstring(String str, String[] status) {
-		List<Campaign> resp = new ArrayList<Campaign>();
-		List<Campaign> tempList = campaigns.findAll();
-		
-		//for para percorrer a lista de campanhas
-		for(int i = 0;i<tempList.size();i++) {
-			String tempStr = tempList.get(i).getName().toUpperCase();
-			Campaign tempCamp = tempList.get(i);
-			
-			if(tempStr.contains(str.toUpperCase())){
-				//for para percorrer a lista de possiveis status
-				// por default, busca por status ativos
-				for (int j = 0; j < status.length; j++) {
-					if(status[j] == tempCamp.getStatus())
-						resp.add(tempList.get(i));
-				}
-			}
-		}
-		return resp;
+	public List<Campaign> getCampaignBySubstring(String newDesc, String[] status) {
+		return this.campaigns.findBySubString(newDesc);
 	}
 	
 	public Campaign findByUrlId(String url) {
@@ -110,7 +93,7 @@ public class CampaignService {
 	//método para mudar a deadline da campanha apenas se a nova data estiver no futuro.
 	public Campaign updateDeadline(User user, String url, LocalDate newDate) {
 		Campaign c = this.campaigns.findByUrlId(url);
-		if(c != null && newDate.isBefore(LocalDate.now()) && c.getOwner().getEmail().equals(user.getEmail())) {
+		if(c != null && !newDate.isBefore(LocalDate.now()) && c.getOwner().getEmail().equals(user.getEmail())) {
 			c.setDeadLine(newDate);
 			this.campaigns.save(c);
 		}
@@ -131,19 +114,26 @@ public class CampaignService {
 		return campaigns.findAllCampaignsByOwner(email);
 	}
 
-	public Campaign addComment(User user, String url, String comment) {
+	public Campaign addComment(User user, String url, Comment comment) {
 		Campaign c = this.campaigns.findByUrlId(url);
-		if(c != null) {
-			this.comments.save(c.addComment(user, comment));
+
+		if (c != null) {
+			comment.setCampaign(c);;
+			comment.setUser(user);
+			c.getComments().add(comment);
+			this.comments.save(comment);
 			this.campaigns.save(c);
-		}
+		} 
 		return c;
 	}
 	
-	public Campaign replyComment(User user, String url, String comment, String idComment) {
+	public Campaign replyComment(User user, String url, Comment reply, String idComment) {
 		Campaign c = this.campaigns.findByUrlId(url);
 		if(c != null) {
-			Comment reply = this.comments.getOne(Integer.parseInt(idComment)).addReply(user, comment, c);
+			Comment com = this.comments.getOne(Integer.parseInt(idComment));
+			reply.setCampaign(c);
+			reply.setUser(user);
+			com.getReplies().add(reply);
 			this.comments.save(reply);
 			this.campaigns.save(c);
 		}

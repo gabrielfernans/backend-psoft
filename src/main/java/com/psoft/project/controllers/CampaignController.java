@@ -2,6 +2,7 @@ package com.psoft.project.controllers;
 
 import javax.servlet.ServletException;
 
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.psoft.project.entities.Campaign;
+import com.psoft.project.entities.Comment;
 import com.psoft.project.entities.User;
 import com.psoft.project.services.CampaignService;
 import com.psoft.project.services.JWTService;
@@ -70,13 +72,13 @@ public class CampaignController {
 	 * @param status Status da campanha
 	 * @return
 	 */
-	public ResponseEntity<List<Campaign>> getCampaignBySubstring(@RequestHeader("Authorization") String header, @RequestBody @Valid String str, String[] status) throws ServletException {
+	public ResponseEntity<List<Campaign>> getCampaignBySubstring(@RequestHeader("Authorization") String header, @RequestBody String newDesc, @RequestBody String status) throws ServletException {
 		if(jwtservice.userExist(header) == null) {
 			return new ResponseEntity<List<Campaign>>(HttpStatus.NOT_FOUND);
 		} try {
 			User user = jwtservice.userExist(header);
 			if(jwtservice.userHasPermission(header, user.getEmail())) {
-				return new ResponseEntity<List<Campaign>>(campaignService.getCampaignBySubstring(str, status), HttpStatus.OK);
+				return new ResponseEntity<List<Campaign>>(campaignService.getCampaignBySubstring(newDesc, status.split(", ")), HttpStatus.OK);
 			}
 		}catch(ServletException s) {
 			return new ResponseEntity<List<Campaign>>(HttpStatus.FORBIDDEN);
@@ -203,13 +205,13 @@ public class CampaignController {
 
 	//método para atualizar a deadline de uma campanha, faz checagem se o usuario esta logado e devidamente autorizado.
 	@PutMapping("/deadline/{url}")
-	public ResponseEntity<Campaign> updateDeadline(@RequestHeader("Authorization") String header, @PathVariable("url") String url, @RequestBody LocalDate newDate) throws ServletException{
+	public ResponseEntity<Campaign> updateDeadline(@RequestHeader("Authorization") String header, @PathVariable("url") String url, @RequestBody String newDate) throws ServletException{
 		if(jwtservice.userExist(header) == null)
 			return new ResponseEntity<Campaign>(HttpStatus.NOT_FOUND);//usuario nao encontrado
 		try {
 			User user = jwtservice.userExist(header);
 			if(jwtservice.userHasPermission(header, user.getEmail())) {
-				Campaign campaign = this.campaignService.updateDeadline(user, url, newDate);
+				Campaign campaign = this.campaignService.updateDeadline(user, url, LocalDate.parse(newDate));
 				if(campaign == null) return new ResponseEntity<Campaign>(HttpStatus.BAD_REQUEST);//usuario passou parametros errados
 				return new ResponseEntity<Campaign>(campaign, HttpStatus.OK);//retorna a campanha com a nova deadline
 			}
@@ -246,7 +248,7 @@ public class CampaignController {
 	 * @throws ServletException
 	 */
 	@PostMapping("/{url}/comment")
-	public ResponseEntity<Campaign> addCommentInCampaign(@RequestHeader("Authorization") String header, @PathVariable("url") String url, @RequestBody String comment) throws ServletException {
+	public ResponseEntity<Campaign> addCommentInCampaign(@RequestHeader("Authorization") String header, @PathVariable("url") String url, @RequestBody Comment comment) throws ServletException {
 		if(jwtservice.userExist(header) == null)
 			return new ResponseEntity<Campaign>(HttpStatus.NOT_FOUND);
 		try {
@@ -272,13 +274,13 @@ public class CampaignController {
 	 * @throws ServletException
 	 */
 	@PostMapping("/{url}/comment/reply")
-	public ResponseEntity<Campaign> replyComment(@RequestHeader("Authorization") String header, @PathVariable("url") String url, @RequestBody String comment, @RequestBody String idComment) throws ServletException {
+	public ResponseEntity<Campaign> replyComment(@RequestHeader("Authorization") String header, @PathVariable("url") String url, @RequestBody Comment reply, @RequestBody String idComment) throws ServletException {
 		if(jwtservice.userExist(header) == null)
 			return new ResponseEntity<Campaign>(HttpStatus.NOT_FOUND);
 		try {
 			User user = jwtservice.userExist(header);
 			if(jwtservice.userHasPermission(header, user.getEmail())) {
-				Campaign campaign = this.campaignService.replyComment(user, url, comment, idComment);
+				Campaign campaign = this.campaignService.replyComment(user, url, reply, idComment);
 				if(campaign == null) return new ResponseEntity<Campaign>(HttpStatus.BAD_REQUEST);
 				return new ResponseEntity<Campaign>(campaign, HttpStatus.OK);
 			}
