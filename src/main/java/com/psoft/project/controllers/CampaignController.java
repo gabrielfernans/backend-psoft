@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.psoft.project.entities.Campaign;
+import com.psoft.project.entities.Comment;
 import com.psoft.project.entities.User;
 import com.psoft.project.services.CampaignService;
 import com.psoft.project.services.JWTService;
@@ -236,23 +237,56 @@ public class CampaignController {
 		}
 		return new ResponseEntity<Campaign>(HttpStatus.UNAUTHORIZED);//usuario sem permissao
 	}
-
-	//método para alterar a meta da campanha, checando se o usuário está logado e devidamente autorizado.
-	@PutMapping("/goal/{url}")
-	public ResponseEntity<Campaign> updateGoal(@RequestHeader("Authorization") String header, @PathVariable("url") String url, @RequestBody Double newGoal) throws ServletException {
+	
+	/**
+	 * Método para adicionar comentários a uma campanha, apenas se o usuário estiver logado e tiver a permissão.
+	 * @param header
+	 * @param url
+	 * @param comment
+	 * @return
+	 * @throws ServletException
+	 */
+	@PostMapping("/comment/{url}")
+	public ResponseEntity<Campaign> addCommentInCampaign(@RequestHeader("Authorization") String header, @PathVariable("url") String url, @RequestBody String comment) throws ServletException {
 		if(jwtservice.userExist(header) == null)
-			return new ResponseEntity<Campaign>(HttpStatus.NOT_FOUND);//usuário nao encontrado
+			return new ResponseEntity<Campaign>(HttpStatus.NOT_FOUND);
 		try {
 			User user = jwtservice.userExist(header);
 			if(jwtservice.userHasPermission(header, user.getEmail())) {
-				Campaign campaign = this.campaignService.updateGoal(user, url, newGoal);
-				if(campaign == null) return new ResponseEntity<Campaign>(HttpStatus.BAD_REQUEST);//dados de parâmetro errados
-				return new ResponseEntity<Campaign>(campaign, HttpStatus.OK);//retorna a campanha com a nova meta
+				Campaign campaign = this.campaignService.addComment(user, url, comment);
+				if(campaign == null) return new ResponseEntity<Campaign>(HttpStatus.BAD_REQUEST);
+				return new ResponseEntity<Campaign>(campaign, HttpStatus.OK);
 			}
 		} catch (ServletException s) {
-			return new ResponseEntity<Campaign>(HttpStatus.FORBIDDEN);//token do usuario invalido ou vencido
+			return new ResponseEntity<Campaign>(HttpStatus.FORBIDDEN);
 		}
-		return new ResponseEntity<Campaign>(HttpStatus.UNAUTHORIZED);//usuario sem permissao
+		return new ResponseEntity<Campaign>(HttpStatus.UNAUTHORIZED);
 	}
-
+	
+	/**
+	 * Método para adicionar comentários a um outro comentário. Somente se o usuário estiver logado e tiver permissão.
+	 * @param header
+	 * @param url
+	 * @param comment
+	 * @param idComment
+	 * @return
+	 * @throws ServletException
+	 */
+	@PostMapping("/comment/reply/{url}")
+	public ResponseEntity<Campaign> replyComment(@RequestHeader("Authorization") String header, @PathVariable("url") String url, @RequestBody String comment, @RequestBody String idComment) throws ServletException {
+		if(jwtservice.userExist(header) == null)
+			return new ResponseEntity<Campaign>(HttpStatus.NOT_FOUND);
+		try {
+			User user = jwtservice.userExist(header);
+			if(jwtservice.userHasPermission(header, user.getEmail())) {
+				Campaign campaign = this.campaignService.replyComment(user, url, comment, idComment);
+				if(campaign == null) return new ResponseEntity<Campaign>(HttpStatus.BAD_REQUEST);
+				return new ResponseEntity<Campaign>(campaign, HttpStatus.OK);
+			}
+		} catch (ServletException s) {
+			return new ResponseEntity<Campaign>(HttpStatus.FORBIDDEN);
+		}
+		return new ResponseEntity<Campaign>(HttpStatus.UNAUTHORIZED);
+	} 
+	
 }
