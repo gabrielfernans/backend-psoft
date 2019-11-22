@@ -289,6 +289,14 @@ public class CampaignController {
 		return new ResponseEntity<Campaign>(HttpStatus.UNAUTHORIZED);
 	} 
 	
+	/**
+	 * Método para deletar comentários, o comentário em si não é apagado do banco, apenas seu texto é retornado nulo.
+	 * @param header
+	 * @param url
+	 * @param idComment
+	 * @return
+	 * @throws ServletException
+	 */
 	@PutMapping("{url}/comment/delete")
 	public ResponseEntity<Campaign> deleteComment(@RequestHeader("Authorization") String header, @PathVariable("url") String url, @RequestBody String idComment) throws ServletException {
 		if(jwtservice.userExist(header) == null)
@@ -306,5 +314,28 @@ public class CampaignController {
 		return new ResponseEntity<Campaign>(HttpStatus.UNAUTHORIZED);
 	}
 
-
+	/**
+	 * Método para alterar a descrição de uma campanha.
+	 * @param header
+	 * @param url
+	 * @param description
+	 * @return
+	 * @throws ServletException
+	 */
+	@PutMapping("{url}/comment/description")
+	public ResponseEntity<Campaign> setDescription(@RequestHeader("Authorization") String header, @PathVariable("url") String url, @RequestBody String description) throws ServletException {
+		if(jwtservice.userExist(header) == null)
+			return new ResponseEntity<Campaign>(HttpStatus.NOT_FOUND);
+		try {
+			User user = jwtservice.userExist(header);
+			if(jwtservice.userHasPermission(header, user.getEmail())) {
+				Campaign campaign = this.campaignService.setDescription(user, url, description);
+				if(campaign == null) return new ResponseEntity<Campaign>(HttpStatus.BAD_REQUEST);
+				return new ResponseEntity<Campaign>(campaign, HttpStatus.OK);
+			}
+		} catch (ServletException s) {
+			return new ResponseEntity<Campaign>(HttpStatus.FORBIDDEN);
+		}
+		return new ResponseEntity<Campaign>(HttpStatus.UNAUTHORIZED);
+	}
 }
