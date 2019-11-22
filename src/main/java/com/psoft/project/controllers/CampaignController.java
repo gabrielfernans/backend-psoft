@@ -205,18 +205,36 @@ public class CampaignController {
 	@PutMapping("/deadline/{url}")
 	public ResponseEntity<Campaign> updateDeadline(@RequestHeader("Authorization") String header, @PathVariable("url") String url, @RequestBody LocalDate newDate) throws ServletException{
 		if(jwtservice.userExist(header) == null)
-			return new ResponseEntity<Campaign>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<Campaign>(HttpStatus.NOT_FOUND);//usuario nao encontrado
 		try {
 			User user = jwtservice.userExist(header);
 			if(jwtservice.userHasPermission(header, user.getEmail())) {
 				Campaign campaign = this.campaignService.updateDeadline(user, url, newDate);
-				if(campaign == null) return new ResponseEntity<Campaign>(HttpStatus.BAD_REQUEST);
-				return new ResponseEntity<Campaign>(campaign, HttpStatus.OK);
+				if(campaign == null) return new ResponseEntity<Campaign>(HttpStatus.BAD_REQUEST);//usuario passou parametros errados
+				return new ResponseEntity<Campaign>(campaign, HttpStatus.OK);//retorna a campanha com a nova deadline
 			}
 		} catch(ServletException s) {
-			return new ResponseEntity<Campaign>(HttpStatus.FORBIDDEN);
+			return new ResponseEntity<Campaign>(HttpStatus.FORBIDDEN);//token de usuario invalido ou vencido
 		}
-		return new ResponseEntity<Campaign>(HttpStatus.UNAUTHORIZED);
+		return new ResponseEntity<Campaign>(HttpStatus.UNAUTHORIZED);//usuario sem permissao
+	}
+	
+	//método para alterar a meta da campanha, checando se o usuário está logado e devidamente autorizado.
+	@PutMapping("/goal/{url}")
+	public ResponseEntity<Campaign> updateGoal(@RequestHeader("Authorization") String header, @PathVariable("url") String url, @RequestBody Double newGoal) throws ServletException {
+		if(jwtservice.userExist(header) == null)
+			return new ResponseEntity<Campaign>(HttpStatus.NOT_FOUND);//usuário nao encontrado
+		try {
+			User user = jwtservice.userExist(header);
+			if(jwtservice.userHasPermission(header, user.getEmail())) {
+				Campaign campaign = this.campaignService.updateGoal(user, url, newGoal);
+				if(campaign == null) return new ResponseEntity<Campaign>(HttpStatus.BAD_REQUEST);//dados de parâmetro errados
+				return new ResponseEntity<Campaign>(campaign, HttpStatus.OK);//retorna a campanha com a nova meta
+			}
+		} catch (ServletException s) {
+			return new ResponseEntity<Campaign>(HttpStatus.FORBIDDEN);//token do usuario invalido ou vencido
+		}
+		return new ResponseEntity<Campaign>(HttpStatus.UNAUTHORIZED);//usuario sem permissao
 	}
 
 	//método para alterar a meta da campanha, checando se o usuário está logado e devidamente autorizado.

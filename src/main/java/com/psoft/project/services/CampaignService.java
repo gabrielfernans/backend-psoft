@@ -98,6 +98,7 @@ public class CampaignService {
 		return c;
 	}
 	
+
 	public List<Campaign> getActivesCampaigns(){
 		return campaigns.findAllCampaignsByStatus();
 	}
@@ -110,7 +111,7 @@ public class CampaignService {
 	//método para mudar a deadline da campanha apenas se a nova data estiver no futuro.
 	public Campaign updateDeadline(User user, String url, LocalDate newDate) {
 		Campaign c = this.campaigns.findByUrlId(url);
-		if(c != null && newDate.isBefore(LocalDate.now())) {
+		if(c != null && newDate.isBefore(LocalDate.now()) && c.getOwner().getEmail().equals(user.getEmail())) {
 			c.setDeadLine(newDate);
 			this.campaigns.save(c);
 		}
@@ -126,9 +127,10 @@ public class CampaignService {
 		}
 		return c;
 	}
-	
+
 	public List<Campaign> getCampaignsByOwner(String email){
 		return campaigns.findAllCampaignsByOwner(email);
 	}
+
 
 }
