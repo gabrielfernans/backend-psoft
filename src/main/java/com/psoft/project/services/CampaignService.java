@@ -41,7 +41,10 @@ public class CampaignService {
 	}
 	
 	public Campaign findByUrlId(String url) {
-		return this.campaigns.findByUrlId(url);
+		Campaign c =  this.campaigns.findByUrlId(url);
+		c.checkConcluded();
+		c.checkExpired();
+		return c;
 	}
 	
 	public Campaign finishCampaignByURL(User user, String url){

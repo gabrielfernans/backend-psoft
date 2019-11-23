@@ -3,6 +3,7 @@ package com.psoft.project.entities;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -203,5 +204,26 @@ public class Campaign {
 			return d;
 		}
 		return null;		
+	}
+	
+	public void checkExpired() {
+		if (this.getDeadLine().isBefore(LocalDate.now()) && !(this.totalValue().equals(this.goal)));
+			this.setStatus("Vencida");
+	}
+	
+	public Double totalValue() {
+		Iterator<Donation> it = this.donations.iterator();
+		Double resp = 0.0;
+		while (it.hasNext()) {
+			Donation d = it.next();
+			resp += d.getValue();
+			}
+		return resp;
+	}
+	
+
+	public void checkConcluded() {
+		if(this.totalValue().equals(this.goal))
+			this.setStatus("Concluida");
 	}
 }
