@@ -230,6 +230,8 @@ public class CampaignController {
 	//método para atualizar a deadline de uma campanha, faz checagem se o usuario esta logado e devidamente autorizado.
 	@PutMapping("/{url}/deadline")
 	public ResponseEntity<Campaign> updateDeadline(@RequestHeader("Authorization") String header, @PathVariable("url") String url, @RequestBody LocalDate newDate) throws ServletException{
+		if(newDate.isBefore(LocalDate.now()))
+			return new ResponseEntity<Campaign>(HttpStatus.BAD_REQUEST);
 		if(jwtservice.userExist(header) == null)
 			return new ResponseEntity<Campaign>(HttpStatus.NOT_FOUND);//usuario nao encontrado
 		try {
