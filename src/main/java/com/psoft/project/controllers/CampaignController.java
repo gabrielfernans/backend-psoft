@@ -71,13 +71,13 @@ public class CampaignController {
 	 * @return
 	 */
 	@GetMapping()
-	public ResponseEntity<List<Campaign>> getCampaignBySubstring(@RequestHeader("Authorization") String header, @RequestBody @Valid String str, String[] status) throws ServletException {
+	public ResponseEntity<List<Campaign>> getCampaignBySubstring(@RequestHeader("Authorization") String header, @RequestBody String subStr) throws ServletException {
 		if(jwtservice.userExist(header) == null) {
 			return new ResponseEntity<List<Campaign>>(HttpStatus.NOT_FOUND);
 		} try {
 			User user = jwtservice.userExist(header);
 			if(jwtservice.userHasPermission(header, user.getEmail())) {
-				return new ResponseEntity<List<Campaign>>(campaignService.getCampaignBySubstring(str, status), HttpStatus.OK);
+				return new ResponseEntity<List<Campaign>>(campaignService.getCampaignBySubstring(subStr), HttpStatus.OK);
 			}
 		}catch(ServletException s) {
 			return new ResponseEntity<List<Campaign>>(HttpStatus.FORBIDDEN);

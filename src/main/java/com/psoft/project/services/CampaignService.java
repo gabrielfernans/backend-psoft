@@ -36,25 +36,8 @@ public class CampaignService {
 	}
 	
 	//Retorna uma lista de campanhas que contem uma determinada substring.
-	public List<Campaign> getCampaignBySubstring(String str, String[] status) {
-		List<Campaign> resp = new ArrayList<Campaign>();
-		List<Campaign> tempList = campaigns.findAll();
-		
-		//for para percorrer a lista de campanhas
-		for(int i = 0;i<tempList.size();i++) {
-			String tempStr = tempList.get(i).getName().toUpperCase();
-			Campaign tempCamp = tempList.get(i);
-			
-			if(tempStr.contains(str.toUpperCase())){
-				//for para percorrer a lista de possiveis status
-				// por default, busca por status ativos
-				for (int j = 0; j < status.length; j++) {
-					if(status[j] == tempCamp.getStatus())
-						resp.add(tempList.get(i));
-				}
-			}
-		}
-		return resp;
+	public List<Campaign> getCampaignBySubstring(String subStr) {
+		return this.campaigns.findAllCampaignBySubStr(subStr);
 	}
 	
 	public Campaign findByUrlId(String url) {
