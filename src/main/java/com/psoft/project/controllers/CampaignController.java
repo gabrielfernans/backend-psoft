@@ -70,14 +70,14 @@ public class CampaignController {
 	 * @param status Status da campanha
 	 * @return
 	 */
-	@GetMapping()
-	public ResponseEntity<List<Campaign>> getCampaignBySubstring(@RequestHeader("Authorization") String header, @RequestBody String subStr) throws ServletException {
+	@GetMapping("/search/{subStr}")
+	public ResponseEntity<List<Campaign>> getCampaignName(@RequestHeader("Authorization") String header, @PathVariable String subStr) throws ServletException {
 		if(jwtservice.userExist(header) == null) {
 			return new ResponseEntity<List<Campaign>>(HttpStatus.NOT_FOUND);
 		} try {
 			User user = jwtservice.userExist(header);
 			if(jwtservice.userHasPermission(header, user.getEmail())) {
-				return new ResponseEntity<List<Campaign>>(campaignService.getCampaignBySubstring(subStr), HttpStatus.OK);
+				return new ResponseEntity<List<Campaign>>(campaignService.getCampaignByName(subStr), HttpStatus.OK);
 			}
 		}catch(ServletException s) {
 			return new ResponseEntity<List<Campaign>>(HttpStatus.FORBIDDEN);

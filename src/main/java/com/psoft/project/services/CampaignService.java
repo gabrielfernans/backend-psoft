@@ -1,5 +1,6 @@
 package com.psoft.project.services;
 
+import java.text.Normalizer;
 import java.time.LocalDate;
 
 import org.springframework.stereotype.Service;
@@ -36,9 +37,19 @@ public class CampaignService {
 	}
 	
 	//Retorna uma lista de campanhas que contem uma determinada substring.
-	public List<Campaign> getCampaignBySubstring(String subStr) {
-		return this.campaigns.findAllCampaignBySubStr(subStr);
-	}
+	public List<Campaign> getCampaignByName(String subStr) {
+		List<Campaign> search = campaigns.findAll();
+        List<Campaign> result = new ArrayList<Campaign>();
+        String substringSemAcento = Normalizer.normalize(subStr, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "").toUpperCase();
+        
+        for (Campaign c : search) {
+            String name = Normalizer.normalize(c.getName(), Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "").toUpperCase();
+            if (name.contains(substringSemAcento)) {
+                result.add(c);
+            }
+        }
+        return result;
+    }
 	
 	public Campaign findByUrlId(String url) {
 		return this.campaigns.findByUrlId(url);
