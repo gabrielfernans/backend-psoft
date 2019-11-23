@@ -104,7 +104,7 @@ public class CampaignService {
 	//método para mudar a deadline da campanha apenas se a nova data estiver no futuro.
 	public Campaign updateDeadline(User user, String url, LocalDate newDate) {
 		Campaign c = this.campaigns.findByUrlId(url);
-		if(c != null && newDate.isAfter(LocalDate.now()) && c.getOwner().getEmail().equals(user.getEmail())) {
+		if(c != null && c.getOwner().getEmail().equals(user.getEmail())) {
 			c.setDeadLine(newDate);
 			this.campaigns.save(c);
 		} 
