@@ -13,6 +13,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotBlank;
@@ -49,10 +50,10 @@ public class Campaign {
 	@OneToMany(targetEntity = Comment.class, fetch = FetchType.LAZY)
 	private List<Comment> comments;
 	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-	@OneToMany(targetEntity = User.class, fetch = FetchType.LAZY)
+	@ManyToMany(targetEntity = User.class, fetch = FetchType.LAZY)
 	private List<User> likes;
 	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-	@OneToMany(targetEntity = User.class, fetch = FetchType.LAZY)
+	@ManyToMany(targetEntity = User.class, fetch = FetchType.LAZY)
 	private List<User> dislikes;
 	
 	public Campaign(String name, String urlId, String description, String deadLine,
