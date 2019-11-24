@@ -45,8 +45,8 @@ public class UsersController {
 	 * @param email E-mail do usuario
 	 * @return Retorna um usuário
 	 */
-	@GetMapping()
-	public ResponseEntity<User> getUser(@RequestBody @Valid String email) {
+	@GetMapping(/{email})
+	public ResponseEntity<User> getUser(@PathVariable String email) {
 		User tempUser = userService.getUser(email);
 		if(tempUser == null)
 			return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
