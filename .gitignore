@@ -4,6 +4,7 @@ target/
 !**/src/main/**
 !**/src/test/**
 deploy/
+dados*
 
 ### STS ###
 .apt_generated
