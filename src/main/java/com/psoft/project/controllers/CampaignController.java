@@ -300,7 +300,7 @@ public class CampaignController {
 	 * @throws ServletException
 	 */
 	@PostMapping("/{url}/comment/reply")
-	public ResponseEntity<Campaign> replyComment(@RequestHeader("Authorization") String header, @PathVariable("url") String url, @RequestBody String comment, @RequestBody String idComment) throws ServletException {
+	public ResponseEntity<Campaign> replyComment(@RequestHeader("Authorization") String header, @PathVariable("url") String url, @RequestBody String comment, @RequestBody Integer idComment) throws ServletException {
 		if(jwtservice.userExist(header) == null)
 			return new ResponseEntity<Campaign>(HttpStatus.NOT_FOUND);
 		try {

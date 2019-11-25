@@ -129,17 +129,16 @@ public class CampaignService {
 		Campaign c = this.campaigns.findByUrlId(url);
 		if(c != null) {
 			this.comments.save(c.addComment(user, comment));
-			this.campaigns.save(c);
+	
 		}
 		return c;
 	}
 	
-	public Campaign replyComment(User user, String url, String comment, String idComment) {
+	public Campaign replyComment(User user, String url, String comment, Integer idComment) {
 		Campaign c = this.campaigns.findByUrlId(url);
 		if(c != null) {
-			Comment reply = this.comments.getOne(Integer.parseInt(idComment)).addReply(user, comment, c);
+			Comment reply = this.comments.getOne(idComment).addReply(user, comment, c);
 			this.comments.save(reply);
-			this.campaigns.save(c);
 		}
 		return c;
 	}
