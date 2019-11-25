@@ -299,6 +299,7 @@ public class CampaignController {
 	 * @return
 	 * @throws ServletException
 	 */
+	/**
 	@PostMapping("/{url}/comment/reply")
 	public ResponseEntity<Campaign> replyComment(@RequestHeader("Authorization") String header, @PathVariable("url") String url, @RequestBody String comment, @RequestBody Integer idComment) throws ServletException {
 		if(jwtservice.userExist(header) == null)
@@ -314,8 +315,8 @@ public class CampaignController {
 			return new ResponseEntity<Campaign>(HttpStatus.FORBIDDEN);
 		}
 		return new ResponseEntity<Campaign>(HttpStatus.UNAUTHORIZED);
-	} 
-	
+	} */
+
 	/**
 	 * Método para deletar comentários, o comentário em si não é apagado do banco, apenas seu texto é retornado nulo.
 	 * @param header
@@ -324,6 +325,7 @@ public class CampaignController {
 	 * @return
 	 * @throws ServletException
 	 */
+	/**
 	@PutMapping("{url}/comment/delete")
 	public ResponseEntity<Campaign> deleteComment(@RequestHeader("Authorization") String header, @PathVariable("url") String url, @RequestBody Integer idComment) throws ServletException {
 		if(jwtservice.userExist(header) == null)
@@ -339,5 +341,5 @@ public class CampaignController {
 			return new ResponseEntity<Campaign>(HttpStatus.FORBIDDEN);
 		}
 		return new ResponseEntity<Campaign>(HttpStatus.UNAUTHORIZED);
-	}
+	}*/
 }

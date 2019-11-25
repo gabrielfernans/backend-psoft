@@ -19,12 +19,10 @@ import com.psoft.project.repositories.CommentRepository;
 public class CampaignService {
 	
 	private CampaignRepository<Campaign, Integer> campaigns;
-	private CommentRepository<Comment, Integer> comments;
 	
 	public CampaignService(CampaignRepository<Campaign, Integer> campaigns, CommentRepository<Comment, Integer> comments) {
 		super();
 		this.campaigns = campaigns;
-		this.comments = comments;
 	}
 	
 
@@ -129,12 +127,12 @@ public class CampaignService {
 		Campaign c = this.campaigns.findByUrlId(url);
 		if(c != null) {
 			if(c.addComment(user, comment) == null) return null;
-			this.comments.save(c.addComment(user, comment));
 			this.campaigns.save(c);
 		}
 		return c;
 	}
 	
+	/**
 	public Campaign replyComment(User user, String url, String comment, Integer idComment) {
 		Campaign c = this.campaigns.findByUrlId(url);
 		if(c != null) {
@@ -153,7 +151,7 @@ public class CampaignService {
 			this.campaigns.save(c);
 		}
 		return c;
-	}
+	}*/
 	
 	public Campaign setDescription(User user, String url, String description) {
 		Campaign c = this.campaigns.findByUrlId(url);
