@@ -325,7 +325,7 @@ public class CampaignController {
 	 * @throws ServletException
 	 */
 	@PutMapping("{url}/comment/delete")
-	public ResponseEntity<Campaign> deleteComment(@RequestHeader("Authorization") String header, @PathVariable("url") String url, @RequestBody String idComment) throws ServletException {
+	public ResponseEntity<Campaign> deleteComment(@RequestHeader("Authorization") String header, @PathVariable("url") String url, @RequestBody Integer idComment) throws ServletException {
 		if(jwtservice.userExist(header) == null)
 			return new ResponseEntity<Campaign>(HttpStatus.NOT_FOUND);
 		try {

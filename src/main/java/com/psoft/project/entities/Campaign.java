@@ -207,7 +207,7 @@ public class Campaign {
 	}
 	
 	public Comment addComment(User user, String comment) {
-		Comment c = new Comment(comment, user, this);
+		Comment c = new Comment(comment, user);
 		this.comments.add(c);
 		return c;
 	}

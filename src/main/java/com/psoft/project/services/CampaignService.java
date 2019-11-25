@@ -128,8 +128,9 @@ public class CampaignService {
 	public Campaign addComment(User user, String url, String comment) {
 		Campaign c = this.campaigns.findByUrlId(url);
 		if(c != null) {
+			if(c.addComment(user, comment) == null) return null;
 			this.comments.save(c.addComment(user, comment));
-	
+			this.campaigns.save(c);
 		}
 		return c;
 	}
@@ -137,15 +138,15 @@ public class CampaignService {
 	public Campaign replyComment(User user, String url, String comment, Integer idComment) {
 		Campaign c = this.campaigns.findByUrlId(url);
 		if(c != null) {
-			Comment reply = this.comments.getOne(idComment).addReply(user, comment, c);
+			Comment reply = this.comments.getOne(idComment).addReply(user, comment);
 			this.comments.save(reply);
 		}
 		return c;
 	}
 	
-	public Campaign deleteComment(User user, String url, String idComment) {
+	public Campaign deleteComment(User user, String url, Integer idComment) {
 		Campaign c = this.campaigns.findByUrlId(url);
-		Comment com = this.comments.getOne(Integer.parseInt(idComment));
+		Comment com = this.comments.getOne(idComment);
 		if(c != null && !com.isDeleted() && com.getUser().getEmail().equals(user.getEmail())) {
 			com.deleteComment();
 			this.comments.save(com);
