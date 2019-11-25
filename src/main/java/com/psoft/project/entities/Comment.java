@@ -27,8 +27,6 @@ public class Comment {
 	private Integer id;
 	@NotBlank(message = "{description.not.blank}")
 	private String comment;
-	@NotBlank(message = "{urlId.not.blank}")
-	private String urlIdComment;
 	@OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)
 	private User user;
 	@NotNull(message = "{deadLine.not.blank}")
@@ -71,9 +69,6 @@ public class Comment {
 		return this.isDeleted;
 	}
  	
-	public String getUrlIdComment() {
-		return urlIdComment;
-	}
 	
 	public LocalDate getDate() {
 		return this.date;
