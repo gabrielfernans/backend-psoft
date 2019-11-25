@@ -137,7 +137,7 @@ public class CampaignService {
 	public Campaign replyComment(User user, String url, String comment, String idComment) {
 		Campaign c = this.campaigns.findByUrlId(url);
 		if(c != null) {
-			Comment reply = this.comments.getOne(Integer.parseInt(idComment)).addReply(user, comment, c);
+			Comment reply = this.comments.getOne(Integer.parseInt(idComment)).addReply(user, comment, c.getUrlId());
 			this.comments.save(reply);
 			this.campaigns.save(c);
 		}

@@ -36,18 +36,18 @@ public class Comment {
 	@OneToMany(targetEntity = Comment.class, fetch = FetchType.LAZY)
 	private List<Comment> replies;
 	@ManyToOne(targetEntity = Campaign.class, fetch = FetchType.EAGER)
-	private Campaign campaign;
+	private String urlCampaign;
 	@NotNull(message = "isDeleted.not.blank}")
 	private Boolean isDeleted;
 	
 	public Comment() {
 	}
 
-	public Comment(String comment, User user, Campaign campaign) {
+	public Comment(String comment, User user, String urlCampaign) {
 		super();
 		this.comment = comment;
 		this.user = user;
-		this.campaign = campaign;
+		this.urlCampaign = urlCampaign;
 		this.date = LocalDate.now();
 		this.replies = new LinkedList<Comment>();
 		this.isDeleted = false;
@@ -78,12 +78,12 @@ public class Comment {
 		return this.replies;
 	}
 	
-	public Campaign getCampaign() {
-		return this.campaign;
+	public String getUrlCampaign() {
+		return this.urlCampaign;
 	}
 	
-	public Comment addReply(User user, String comment, Campaign campaign) {
-		Comment reply = new Comment(comment, user, campaign);
+	public Comment addReply(User user, String comment, String urlCampaign) {
+		Comment reply = new Comment(comment, user, urlCampaign);
 		this.replies.add(reply);
 		return reply;
 	}
