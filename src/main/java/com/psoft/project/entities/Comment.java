@@ -43,11 +43,11 @@ public class Comment {
 	public Comment() {
 	}
 
-	public Comment(String comment, User user, String urlCampaign) {
+	public Comment(String comment, User user, Campaign campaign) {
 		super();
 		this.comment = comment;
 		this.user = user;
-		this.urlCampaign = urlCampaign;
+		this.urlCampaign = campaign.getUrlId();
 		this.date = LocalDate.now();
 		this.replies = new LinkedList<Comment>();
 		this.isDeleted = false;
@@ -82,8 +82,8 @@ public class Comment {
 		return this.urlCampaign;
 	}
 	
-	public Comment addReply(User user, String comment, String urlCampaign) {
-		Comment reply = new Comment(comment, user, urlCampaign);
+	public Comment addReply(User user, String comment, Campaign campaign) {
+		Comment reply = new Comment(comment, user, campaign);
 		this.replies.add(reply);
 		return reply;
 	}
