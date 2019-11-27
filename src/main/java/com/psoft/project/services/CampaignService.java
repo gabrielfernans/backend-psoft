@@ -1,6 +1,7 @@
 package com.psoft.project.services;
 
 import java.text.Normalizer;
+
 import java.time.LocalDate;
 
 import org.springframework.stereotype.Service;
@@ -13,14 +14,13 @@ import com.psoft.project.entities.Comment;
 import com.psoft.project.entities.User;
 import com.psoft.project.exceptions.InvalidDateException;
 import com.psoft.project.repositories.CampaignRepository;
-import com.psoft.project.repositories.CommentRepository;
 
 @Service
 public class CampaignService {
 	
 	private CampaignRepository<Campaign, Integer> campaigns;
 	
-	public CampaignService(CampaignRepository<Campaign, Integer> campaigns, CommentRepository<Comment, Integer> comments) {
+	public CampaignService(CampaignRepository<Campaign, Integer> campaigns) {
 		super();
 		this.campaigns = campaigns;
 	}
@@ -125,23 +125,22 @@ public class CampaignService {
 
 	public Campaign addComment(User user, String url, String comment) {
 		Campaign c = this.campaigns.findByUrlId(url);
-		if(c != null) {
-			if(c.addComment(user, comment) == null) return null;
+		if(c != null)  {
+			c.addComment(user, comment);
 			this.campaigns.save(c);
 		}
 		return c;
 	}
 	
-	/**
 	public Campaign replyComment(User user, String url, String comment, Integer idComment) {
 		Campaign c = this.campaigns.findByUrlId(url);
 		if(c != null) {
-			Comment reply = this.comments.getOne(idComment).addReply(user, comment);
-			this.comments.save(reply);
+			c.addReply(comment, user, idComment);
+			this.campaigns.save(c);
 		}
 		return c;
 	}
-	
+	/**
 	public Campaign deleteComment(User user, String url, Integer idComment) {
 		Campaign c = this.campaigns.findByUrlId(url);
 		Comment com = this.comments.getOne(idComment);

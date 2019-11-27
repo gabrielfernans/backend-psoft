@@ -13,6 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotBlank;
@@ -46,7 +47,7 @@ public class Campaign {
 	@OneToOne(targetEntity = User.class, fetch = FetchType.LAZY)
 	private User owner;
 	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-	@OneToMany(targetEntity = Comment.class, fetch = FetchType.LAZY)
+	@OneToMany(cascade = CascadeType.ALL,targetEntity = Comment.class, fetch = FetchType.LAZY)
 	private List<Comment> comments;
 	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 	@ManyToMany(targetEntity = User.class, fetch = FetchType.LAZY)
@@ -72,6 +73,7 @@ public class Campaign {
 		this.deadLine = d;
 		this.status = "Ativa";
 		this.goal = goal;
+		this.comments = new ArrayList<Comment>();
 	}
 
 	public Integer getId() {
@@ -84,6 +86,23 @@ public class Campaign {
 
 	public String getUrlId() {
 		return urlId;
+	}
+	
+	public Comment getCommentById(Integer idComment) {
+		Comment com = null;
+		for(int i = 0;i < comments.size();i++) {
+			if(comments.get(i).getId().compareTo(idComment)==0) {
+				com = comments.get(i);
+			}
+		}
+		return com;
+	}
+	
+	public Comment addReply(String comment, User user, Integer idComment) {
+		Comment com = this.getCommentById(idComment);
+		if(com != null)
+			com.addReply(user, comment);
+		return com;
 	}
 
 	public String getDescription() {
@@ -207,9 +226,9 @@ public class Campaign {
 	}
 	
 	public Comment addComment(User user, String comment) {
-		Comment c = new Comment(comment, user);
-		this.comments.add(c);
-		return c;
+		Comment com = new Comment(comment, user);
+		comments.add(com);
+		return com;
 	}
 	
 	

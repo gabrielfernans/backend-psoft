@@ -299,15 +299,14 @@ public class CampaignController {
 	 * @return
 	 * @throws ServletException
 	 */
-	/**
-	@PostMapping("/{url}/comment/reply")
-	public ResponseEntity<Campaign> replyComment(@RequestHeader("Authorization") String header, @PathVariable("url") String url, @RequestBody String comment, @RequestBody Integer idComment) throws ServletException {
+	@PutMapping("/{url}/comment/reply")
+	public ResponseEntity<Campaign> replyComment(@RequestHeader("Authorization") String header, @PathVariable("url") String url, @RequestBody String comment, @RequestBody String idComment) throws ServletException {
 		if(jwtservice.userExist(header) == null)
 			return new ResponseEntity<Campaign>(HttpStatus.NOT_FOUND);
 		try {
 			User user = jwtservice.userExist(header);
 			if(jwtservice.userHasPermission(header, user.getEmail())) {
-				Campaign campaign = this.campaignService.replyComment(user, url, comment, idComment);
+				Campaign campaign = this.campaignService.replyComment(user, url, comment, Integer.parseInt(idComment));
 				if(campaign == null) return new ResponseEntity<Campaign>(HttpStatus.BAD_REQUEST);
 				return new ResponseEntity<Campaign>(campaign, HttpStatus.OK);
 			}
@@ -315,7 +314,7 @@ public class CampaignController {
 			return new ResponseEntity<Campaign>(HttpStatus.FORBIDDEN);
 		}
 		return new ResponseEntity<Campaign>(HttpStatus.UNAUTHORIZED);
-	} */
+	} 
 
 	/**
 	 * Método para deletar comentários, o comentário em si não é apagado do banco, apenas seu texto é retornado nulo.

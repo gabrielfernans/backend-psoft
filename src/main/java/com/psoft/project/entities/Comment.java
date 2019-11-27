@@ -25,13 +25,13 @@ public class Comment {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
-	@NotBlank(message = "{description.not.blank}")
-	private String comment;
 	@OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)
 	private User user;
 	@NotNull(message = "{deadLine.not.blank}")
 	@JsonFormat(pattern="yyyy-MM-dd")
 	private LocalDate date;
+	@NotNull(message = "comment.not.blank}")
+	private String comment;
 	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 	@OneToMany(targetEntity = Comment.class, fetch = FetchType.LAZY)
 	private List<Comment> replies;
@@ -49,6 +49,8 @@ public class Comment {
 		this.replies = new LinkedList<Comment>();
 		this.isDeleted = false;
 	}
+	
+	
 
 	@Override
 	public String toString() {
@@ -56,6 +58,18 @@ public class Comment {
 		if(!isDeleted())
 			resp = this.comment;
 		return resp;
+	}
+	
+	public String getComment() {
+		return comment;
+	}
+	
+	public void setComment(String comment) {
+		this.comment = comment;
+	}
+	
+	public Integer getId() {
+		return id;
 	}
 
 	public User getUser() {
