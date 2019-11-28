@@ -74,7 +74,7 @@ public class CommentService {
 	        if (!(com.getUser().getEmail().equals(userMail))) {
 	            throw new IllegalArgumentException("Esse comentário não pertece ao usuário passado no token");
 	        }
-	        com.deleteComment();
+	        com.setIsDeleted(true);;
 	        return this.comments.save(com);
 	    }
 

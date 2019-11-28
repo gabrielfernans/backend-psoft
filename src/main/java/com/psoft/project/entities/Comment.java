@@ -58,23 +58,6 @@ public class Comment {
 		return resp;
 	}
 	
-	
-	
-	public void deleteComment() {
-        this.isDeleted = true;
-        if (!getReplies().isEmpty()) {
-            deleteReplies(this.getReplies());
-        }
-    }
-	
-	private void deleteReplies(List<Comment> replies) {
-        if (!replies.isEmpty()) {
-            for (Comment r : replies) {
-                r.deleteComment();
-            }
-        }
-    }
-	
 	public void addReply(Comment reply) {
         replies.add(reply);
     }
