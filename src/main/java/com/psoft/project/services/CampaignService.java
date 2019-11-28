@@ -36,6 +36,11 @@ public class CampaignService {
 	
 	//Retorna uma lista de campanhas que contem uma determinada substring.
 	public List<Campaign> getCampaignByName(String subStr) {
+		
+		if (subStr == null) throw new IllegalArgumentException("A subString não pode ser Null");
+		if (subStr.trim().equals(""))
+            throw new IllegalArgumentException("A subString não pode ser vazia, insira uma subString valida");
+		
 		List<Campaign> search = campaigns.findAll();
         List<Campaign> result = new ArrayList<Campaign>();
         String substringSemAcento = Normalizer.normalize(subStr, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "").toUpperCase();

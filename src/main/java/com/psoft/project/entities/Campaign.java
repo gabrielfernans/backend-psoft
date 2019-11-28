@@ -97,6 +97,7 @@ public class Campaign {
 	}
 
 	public String getStatus() {
+		this.checkStatus();
 		return status;
 	}
 
@@ -210,6 +211,24 @@ public class Campaign {
 	
 	public void addComment(Comment comment) {
 		this.comments.add(comment);
+	}
+	
+	private Double sumDonations() {
+		Double resp = 0.0;
+		for (Donation d : donations) {
+			resp += d.getValue();
+		}
+		return resp;
+	}
+	
+	private void checkStatus() {
+		if(this.deadLine.isBefore(LocalDate.now()) && this.sumDonations().compareTo(goal) < 0) {
+			this.status = "Vencida";
+		}
+		else if(this.deadLine.isBefore(LocalDate.now()) && this.sumDonations().compareTo(goal) >= 0) {
+			this.status = "Concluida";
+		};
+			
 	}
 	
 	
