@@ -47,7 +47,7 @@ public class Campaign {
 	@OneToOne(targetEntity = User.class, fetch = FetchType.LAZY)
 	private User owner;
 	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-	@OneToMany(cascade = CascadeType.ALL,targetEntity = Comment.class, fetch = FetchType.LAZY)
+	@ManyToMany(cascade = CascadeType.ALL,targetEntity = Comment.class, fetch = FetchType.LAZY)
 	private List<Comment> comments;
 	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 	@ManyToMany(targetEntity = User.class, fetch = FetchType.LAZY)

@@ -33,8 +33,6 @@ public class Comment {
 	private LocalDate date;
 	@NotNull(message = "text.not.null}")
 	private String text;
-	@ManyToOne(targetEntity = Campaign.class, fetch = FetchType.EAGER)
-	private Campaign campaign;
 	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 	@OneToMany(targetEntity = Comment.class, fetch = FetchType.LAZY)
 	private List<Comment> replies;
@@ -45,7 +43,6 @@ public class Comment {
 	}
 
 	 public Comment(Campaign campaign, User user, String text, LocalDate date, ArrayList<Comment> replies) {
-	        this.campaign = campaign;
 	        this.user = user;
 	        this.text = text;
 	        this.date = date;
@@ -112,14 +109,6 @@ public class Comment {
 
 	public void setText(String text) {
 		this.text = text;
-	}
-
-	public Campaign getCampaign() {
-		return campaign;
-	}
-
-	public void setCampaign(Campaign campaign) {
-		this.campaign = campaign;
 	}
 
 	public List<Comment> getReplies() {

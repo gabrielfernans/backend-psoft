@@ -52,7 +52,7 @@ public class CommentService {
 	        if (com == null) {
 	            throw new IllegalArgumentException("Comentário não existe!");
 	        }
-	        if (com.isDeleted()) {
+	        if (com.getIsDeleted()) {
 	            throw new IllegalArgumentException("Comentário apagado!");
 	        }
 	        return com;
