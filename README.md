@@ -1,6 +1,6 @@
 ## BACKEND - AJUDE - PROJETO DE SOFTWARE 2019.2
 
-<div style="text-align:center"><img src="https://ajude-psoft.netlify.com/styles/img/wallpaper.png" width="500" height="400"/></div>
+<div style="text-align:center"><img src="https://ajude-psoft.netlify.com/styles/img/wallpaper.png" height="280px"/></div>
 
 ### Descrição
 
