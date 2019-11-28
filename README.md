@@ -8,7 +8,7 @@
 
 >O sistema foi desenvolvido como projeto final da disciplina Projeto de Software no período 2019.2, ministrada por Dalton Serey e Raquel Lopes.
 
-###Token
+### Token
 
 >O token de autenticação do usuário tem duração de 30 min.
 
