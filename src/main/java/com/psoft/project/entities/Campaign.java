@@ -87,23 +87,6 @@ public class Campaign {
 	public String getUrlId() {
 		return urlId;
 	}
-	
-	public Comment getCommentById(Integer idComment) {
-		Comment com = null;
-		for(int i = 0;i < comments.size();i++) {
-			if(comments.get(i).getId().compareTo(idComment)==0) {
-				com = comments.get(i);
-			}
-		}
-		return com;
-	}
-	
-	public Comment addReply(String comment, User user, Integer idComment) {
-		Comment com = this.getCommentById(idComment);
-		if(com != null)
-			com.addReply(user, comment);
-		return com;
-	}
 
 	public String getDescription() {
 		return description;
@@ -133,7 +116,7 @@ public class Campaign {
 	}
 
 	public List<Comment> getComments() {
-		return comments;
+		return this.comments;
 	}
 
 	public List<User> getLikes() {
@@ -225,10 +208,8 @@ public class Campaign {
 		return null;		
 	}
 	
-	public Comment addComment(User user, String comment) {
-		Comment com = new Comment(comment, user);
-		comments.add(com);
-		return com;
+	public void addComment(Comment comment) {
+		this.comments.add(comment);
 	}
 	
 	

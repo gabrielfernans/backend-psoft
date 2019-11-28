@@ -122,35 +122,6 @@ public class CampaignService {
 	public List<Campaign> getCampaignsByOwner(String email){
 		return campaigns.findAllCampaignsByOwner(email);
 	}
-
-	public Campaign addComment(User user, String url, String comment) {
-		Campaign c = this.campaigns.findByUrlId(url);
-		if(c != null)  {
-			c.addComment(user, comment);
-			this.campaigns.save(c);
-		}
-		return c;
-	}
-	
-	public Campaign replyComment(User user, String url, String comment, Integer idComment) {
-		Campaign c = this.campaigns.findByUrlId(url);
-		if(c != null) {
-			c.addReply(comment, user, idComment);
-			this.campaigns.save(c);
-		}
-		return c;
-	}
-	/**
-	public Campaign deleteComment(User user, String url, Integer idComment) {
-		Campaign c = this.campaigns.findByUrlId(url);
-		Comment com = this.comments.getOne(idComment);
-		if(c != null && !com.isDeleted() && com.getUser().getEmail().equals(user.getEmail())) {
-			com.deleteComment();
-			this.comments.save(com);
-			this.campaigns.save(c);
-		}
-		return c;
-	}*/
 	
 	public Campaign setDescription(User user, String url, String description) {
 		Campaign c = this.campaigns.findByUrlId(url);

@@ -1,6 +1,7 @@
 package com.psoft.project.entities;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -24,14 +25,16 @@ public class Comment {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+	private long id;
 	@OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)
 	private User user;
 	@NotNull(message = "{deadLine.not.blank}")
 	@JsonFormat(pattern="yyyy-MM-dd")
 	private LocalDate date;
-	@NotNull(message = "comment.not.blank}")
-	private String comment;
+	@NotNull(message = "text.not.blank}")
+	private String text;
+	@ManyToOne(targetEntity = Campaign.class, fetch = FetchType.EAGER)
+	private Campaign campaign;
 	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 	@OneToMany(targetEntity = Comment.class, fetch = FetchType.LAZY)
 	private List<Comment> replies;
@@ -41,14 +44,13 @@ public class Comment {
 	public Comment() {
 	}
 
-	public Comment(String comment, User user) {
-		super();
-		this.comment = comment;
-		this.user = user;
-		this.date = LocalDate.now();
-		this.replies = new LinkedList<Comment>();
-		this.isDeleted = false;
-	}
+	 public Comment(Campaign campaign, User user, String text, LocalDate date, ArrayList<Comment> replies) {
+	        this.campaign = campaign;
+	        this.user = user;
+	        this.text = text;
+	        this.date = date;
+	        this.replies = replies;
+	    }
 	
 	
 
@@ -56,19 +58,19 @@ public class Comment {
 	public String toString() {
 		String resp = null;
 		if(!isDeleted())
-			resp = this.comment;
+			resp = this.text;
 		return resp;
 	}
 	
 	public String getComment() {
-		return comment;
+		return text;
 	}
 	
-	public void setComment(String comment) {
-		this.comment = comment;
+	public void setComment(String text) {
+		this.text = text;
 	}
 	
-	public Integer getId() {
+	public long getId() {
 		return id;
 	}
 
@@ -89,17 +91,33 @@ public class Comment {
 		return this.replies;
 	}
 	
-	
-	
-	public Comment addReply(User user, String comment) {
-		Comment reply = new Comment(comment, user);
-		this.replies.add(reply);
-		return reply;
-	}
-	
 	public void deleteComment() {
-		this.isDeleted = true;
+        this.isDeleted = true;
+        if (!getReplies().isEmpty()) {
+            deleteReplies(this.getReplies());
+        }
+    }
+	
+	private void deleteReplies(List<Comment> replies) {
+        if (!replies.isEmpty()) {
+            for (Comment r : replies) {
+                r.deleteComment();
+            }
+        }
+    }
+
+	
+	public Campaign getCampaign() {
+		return this.campaign;
 	}
+	
+	public void setCampaign(Campaign campaign) {
+		this.campaign = campaign;
+	}
+	
+	public void addReply(Comment reply) {
+        replies.add(reply);
+    }
 	
 	
 	

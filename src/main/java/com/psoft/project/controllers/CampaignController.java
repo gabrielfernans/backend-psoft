@@ -2,6 +2,7 @@ package com.psoft.project.controllers;
 
 import javax.servlet.ServletException;
 
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -21,10 +22,13 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.psoft.project.entities.Campaign;
+import com.psoft.project.entities.Comment;
 import com.psoft.project.entities.User;
 import com.psoft.project.services.CampaignService;
+import com.psoft.project.services.CommentService;
 import com.psoft.project.services.JWTService;
 import com.psoft.project.services.UserService;
 
@@ -36,6 +40,7 @@ public class CampaignController {
 	@Autowired
 	private JWTService jwtservice;
 	private UserService uservice;
+	private CommentService commentService;
 	
 	public CampaignController(UserService uservice) {
 		super();
@@ -265,80 +270,39 @@ public class CampaignController {
 		return new ResponseEntity<Campaign>(HttpStatus.UNAUTHORIZED);//usuario sem permissao
 	}
 	
-	/**
-	 * Método para adicionar comentários a uma campanha, apenas se o usuário estiver logado e tiver a permissão.
-	 * @param header
-	 * @param url
-	 * @param comment
-	 * @return
-	 * @throws ServletException
-	 */
-	@PutMapping("/{url}/comment")
-	public ResponseEntity<Campaign> addCommentInCampaign(@RequestHeader("Authorization") String header, @PathVariable("url") String url, @RequestBody String comment) throws ServletException {
+	@PostMapping("/{url}/comment")
+	public ResponseEntity<Comment> addComment(@RequestHeader("Authorization") String header, @PathVariable("url") String url, @RequestParam(name = "idComment", defaultValue = "0") long idComment, @RequestBody String text) throws ServletException {
 		if(jwtservice.userExist(header) == null)
-			return new ResponseEntity<Campaign>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<Comment>(HttpStatus.NOT_FOUND);
 		try {
 			User user = jwtservice.userExist(header);
 			if(jwtservice.userHasPermission(header, user.getEmail())) {
-				Campaign campaign = this.campaignService.addComment(user, url, comment);
-				if(campaign == null) return new ResponseEntity<Campaign>(HttpStatus.BAD_REQUEST);
-				return new ResponseEntity<Campaign>(campaign, HttpStatus.OK);
+				Campaign campaign = this.campaignService.findByUrlId(url);
+				Comment com = this.commentService.create(campaign, user, text, idComment);
+				if(campaign == null || com == null) return new ResponseEntity<Comment>(HttpStatus.BAD_REQUEST);
+				return new ResponseEntity<Comment>(com, HttpStatus.OK);
 			}
 		} catch (ServletException s) {
-			return new ResponseEntity<Campaign>(HttpStatus.FORBIDDEN);
+			return new ResponseEntity<Comment>(HttpStatus.FORBIDDEN);
 		}
-		return new ResponseEntity<Campaign>(HttpStatus.UNAUTHORIZED);
+		return new ResponseEntity<Comment>(HttpStatus.UNAUTHORIZED);
 	}
 	
-	/**
-	 * Método para adicionar comentários a um outro comentário. Somente se o usuário estiver logado e tiver permissão.
-	 * @param header
-	 * @param url
-	 * @param comment
-	 * @param idComment
-	 * @return
-	 * @throws ServletException
-	 */
-	@PutMapping("/{url}/comment/reply")
-	public ResponseEntity<Campaign> replyComment(@RequestHeader("Authorization") String header, @PathVariable("url") String url, @RequestBody String comment, @RequestBody String idComment) throws ServletException {
+	@PutMapping("/{url}/comment")
+	public ResponseEntity<Comment> deleteComment(@RequestHeader("Authorization") String header, @RequestBody long idComment) throws ServletException {
 		if(jwtservice.userExist(header) == null)
-			return new ResponseEntity<Campaign>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<Comment>(HttpStatus.NOT_FOUND);
 		try {
 			User user = jwtservice.userExist(header);
 			if(jwtservice.userHasPermission(header, user.getEmail())) {
-				Campaign campaign = this.campaignService.replyComment(user, url, comment, Integer.parseInt(idComment));
-				if(campaign == null) return new ResponseEntity<Campaign>(HttpStatus.BAD_REQUEST);
-				return new ResponseEntity<Campaign>(campaign, HttpStatus.OK);
+				Comment com = this.commentService.deleteUpdate(idComment, user.getEmail());
+				if(com == null) return new ResponseEntity<Comment>(HttpStatus.BAD_REQUEST);
+				return new ResponseEntity<Comment>(com, HttpStatus.OK);
 			}
 		} catch (ServletException s) {
-			return new ResponseEntity<Campaign>(HttpStatus.FORBIDDEN);
+			return new ResponseEntity<Comment>(HttpStatus.FORBIDDEN);
 		}
-		return new ResponseEntity<Campaign>(HttpStatus.UNAUTHORIZED);
-	} 
-
-	/**
-	 * Método para deletar comentários, o comentário em si não é apagado do banco, apenas seu texto é retornado nulo.
-	 * @param header
-	 * @param url
-	 * @param idComment
-	 * @return
-	 * @throws ServletException
-	 */
-	/**
-	@PutMapping("{url}/comment/delete")
-	public ResponseEntity<Campaign> deleteComment(@RequestHeader("Authorization") String header, @PathVariable("url") String url, @RequestBody Integer idComment) throws ServletException {
-		if(jwtservice.userExist(header) == null)
-			return new ResponseEntity<Campaign>(HttpStatus.NOT_FOUND);
-		try {
-			User user = jwtservice.userExist(header);
-			if(jwtservice.userHasPermission(header, user.getEmail())) {
-				Campaign campaign = this.campaignService.deleteComment(user, url, idComment);
-				if(campaign == null) return new ResponseEntity<Campaign>(HttpStatus.BAD_REQUEST);
-				return new ResponseEntity<Campaign>(campaign, HttpStatus.OK);
-			}
-		} catch (ServletException s) {
-			return new ResponseEntity<Campaign>(HttpStatus.FORBIDDEN);
-		}
-		return new ResponseEntity<Campaign>(HttpStatus.UNAUTHORIZED);
-	}*/
+		return new ResponseEntity<Comment>(HttpStatus.UNAUTHORIZED);
+	}
+	
 }
