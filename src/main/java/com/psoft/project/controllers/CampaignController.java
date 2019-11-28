@@ -41,6 +41,7 @@ public class CampaignController {
 	@Autowired
 	private JWTService jwtservice;
 	private UserService uservice;
+	@Autowired
 	private CommentService commentService;
 	
 	public CampaignController(UserService uservice) {
@@ -280,8 +281,8 @@ public class CampaignController {
 			if(jwtservice.userHasPermission(header, user.getEmail())) {
 				Campaign campaign = this.campaignService.findByUrlId(url);
 				Comment com = this.commentService.create(campaign, user, text, 0);
-				if(campaign == null || com == null) return new ResponseEntity<Comment>(HttpStatus.BAD_REQUEST);
-				return new ResponseEntity<Comment>(com, HttpStatus.OK);
+				if(campaign == null) return new ResponseEntity<Comment>(HttpStatus.BAD_REQUEST);
+				return new ResponseEntity<Comment>(com, HttpStatus.CREATED);
 			}
 		} catch (ServletException s) {
 			return new ResponseEntity<Comment>(HttpStatus.FORBIDDEN);

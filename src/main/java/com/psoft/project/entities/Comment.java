@@ -28,17 +28,17 @@ public class Comment {
 	private long id;
 	@OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)
 	private User user;
-	@NotNull(message = "{deadLine.not.blank}")
+	@NotNull(message = "{deadLine.not.null}")
 	@JsonFormat(pattern="yyyy-MM-dd")
 	private LocalDate date;
-	@NotNull(message = "text.not.blank}")
+	@NotNull(message = "text.not.null}")
 	private String text;
 	@ManyToOne(targetEntity = Campaign.class, fetch = FetchType.EAGER)
 	private Campaign campaign;
 	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 	@OneToMany(targetEntity = Comment.class, fetch = FetchType.LAZY)
 	private List<Comment> replies;
-	@NotNull(message = "isDeleted.not.blank}")
+	@NotNull(message = "isDeleted.not.null}")
 	private Boolean isDeleted;
 	
 	public Comment() {
@@ -50,46 +50,18 @@ public class Comment {
 	        this.text = text;
 	        this.date = date;
 	        this.replies = replies;
+	        this.isDeleted = false;
 	    }
 	
-	
-
 	@Override
 	public String toString() {
 		String resp = null;
-		if(!isDeleted())
+		if(!this.getIsDeleted())
 			resp = this.text;
 		return resp;
 	}
 	
-	public String getComment() {
-		return text;
-	}
 	
-	public void setComment(String text) {
-		this.text = text;
-	}
-	
-	public long getId() {
-		return id;
-	}
-
-	public User getUser() {
-		return user;
-	}
-	
-	public Boolean isDeleted() {
-		return this.isDeleted;
-	}
- 	
-	
-	public LocalDate getDate() {
-		return this.date;
-	}
-	
-	public List<Comment> getReplies() {
-		return this.replies;
-	}
 	
 	public void deleteComment() {
         this.isDeleted = true;
@@ -105,19 +77,66 @@ public class Comment {
             }
         }
     }
-
-	
-	public Campaign getCampaign() {
-		return this.campaign;
-	}
-	
-	public void setCampaign(Campaign campaign) {
-		this.campaign = campaign;
-	}
 	
 	public void addReply(Comment reply) {
         replies.add(reply);
     }
+
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public LocalDate getDate() {
+		return date;
+	}
+
+	public void setDate(LocalDate date) {
+		this.date = date;
+	}
+
+	public String getText() {
+		return text;
+	}
+
+	public void setText(String text) {
+		this.text = text;
+	}
+
+	public Campaign getCampaign() {
+		return campaign;
+	}
+
+	public void setCampaign(Campaign campaign) {
+		this.campaign = campaign;
+	}
+
+	public List<Comment> getReplies() {
+		return replies;
+	}
+
+	public void setReplies(List<Comment> replies) {
+		this.replies = replies;
+	}
+
+	public Boolean getIsDeleted() {
+		return isDeleted;
+	}
+
+	public void setIsDeleted(Boolean isDeleted) {
+		this.isDeleted = isDeleted;
+	}
 	
 	
 	

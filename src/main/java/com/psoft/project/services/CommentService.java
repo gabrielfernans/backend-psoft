@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.psoft.project.entities.Campaign;
@@ -15,19 +16,25 @@ import com.psoft.project.repositories.CommentRepository;
 @Service
 public class CommentService {
 	
+	@Autowired
 	private CommentRepository<Comment, Long> comments;
+	
+	public CommentService() {
+		
+	}
 	
 	public CommentService(CommentRepository<Comment, Long> comments) {
 		this.comments = comments;
 	}
 	
 	 public Comment create(Campaign campaign, User user, String text, long idComment) {
+		 	
 	        if (text == null) throw new IllegalArgumentException("O comentário não pode ser Null");
 	        if (text.trim().equals(""))
 	            throw new IllegalArgumentException("O comentário não pode ser vazio, insira um comentário valido");
 	        if (user == null) throw new IllegalArgumentException("O usuário não pode ser Null");
 	        if (campaign == null) throw new IllegalArgumentException("A campanha não pode ser Null");
-
+	        
 	        LocalDate data = LocalDate.now();
 	        Comment com = new Comment(campaign, user, text, data, new ArrayList<Comment>());
 	        if (idComment == 0) {
