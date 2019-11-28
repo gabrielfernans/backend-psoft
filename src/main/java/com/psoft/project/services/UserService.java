@@ -65,14 +65,14 @@ public class UserService {
 	private void sendEmailVerificationToken(String email, String token) {
 		SimpleMailMessage message = new SimpleMailMessage();
 		String url = "/views/new-password.html?token=" + token;
-		String m = "Para redefinir a senha acesse o link abaixo ";
-		message.setText(m + "http://localhost:5500" + url);
+		String m = "Olá, para redefinir a sua senha acesse o seguinte link: ";
+		message.setText(m + "http://ajude-psoft.netlify.com" + url);
 		message.setTo(email);
 		emailSender.send(message);	
 	}
 
 	private void sendEmail(String email) {
-		String url = "http://localhost:5500/views";
+		String url = "https://ajude-psoft.netlify.com";
 		SimpleMailMessage message = new SimpleMailMessage();
 		message.setText("Seja bem-vindo ao AJUDE! Para acessar o site acesse o seguinte link: " 
 						+ url);
