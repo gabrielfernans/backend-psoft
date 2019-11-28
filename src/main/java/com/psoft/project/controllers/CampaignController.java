@@ -22,11 +22,14 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.psoft.project.entities.Campaign;
 import com.psoft.project.entities.Comment;
 import com.psoft.project.entities.User;
 import com.psoft.project.services.CampaignService;
+import com.psoft.project.services.CommentService;
 import com.psoft.project.services.JWTService;
 import com.psoft.project.services.UserService;
 
@@ -38,6 +41,8 @@ public class CampaignController {
 	@Autowired
 	private JWTService jwtservice;
 	private UserService uservice;
+	@Autowired
+	private CommentService commentService;
 	
 	public CampaignController(UserService uservice) {
 		super();
@@ -62,7 +67,7 @@ public class CampaignController {
 		return new ResponseEntity<Campaign>(HttpStatus.UNAUTHORIZED);
 	}
 	
-	@GetMapping()
+	
 	/**
 	 * metodo para buscar as campanhas no repositorio que possuem uma substring no nome e status parametrizado pelo usuario
 	 * caso o usuario nao busque por nenhum status, por default, o metodo busca pelos status ativos
@@ -72,13 +77,14 @@ public class CampaignController {
 	 * @param status Status da campanha
 	 * @return
 	 */
-	public ResponseEntity<List<Campaign>> getCampaignBySubstring(@RequestHeader("Authorization") String header, @RequestBody String newDesc) throws ServletException {
+	@GetMapping("/search/{subStr}")
+	public ResponseEntity<List<Campaign>> getCampaignName(@RequestHeader("Authorization") String header, @PathVariable String subStr) throws ServletException {
 		if(jwtservice.userExist(header) == null) {
 			return new ResponseEntity<List<Campaign>>(HttpStatus.NOT_FOUND);
 		} try {
 			User user = jwtservice.userExist(header);
 			if(jwtservice.userHasPermission(header, user.getEmail())) {
-				return new ResponseEntity<List<Campaign>>(campaignService.getCampaignBySubstring(newDesc), HttpStatus.OK);
+				return new ResponseEntity<List<Campaign>>(campaignService.getCampaignByName(subStr), HttpStatus.OK);
 			}
 		}catch(ServletException s) {
 			return new ResponseEntity<List<Campaign>>(HttpStatus.FORBIDDEN);
@@ -122,7 +128,7 @@ public class CampaignController {
 		return new ResponseEntity<Campaign>(HttpStatus.UNAUTHORIZED);
 	}
 
-	@PutMapping("/like/{url}")
+	@PutMapping("/{url}/like")
 	public ResponseEntity<Campaign> addLikeByURL(@RequestHeader("Authorization") String header, @PathVariable("url") String url) throws ServletException {
 		if(jwtservice.userExist(header) == null) {
 			return new ResponseEntity<Campaign>(HttpStatus.NOT_FOUND);
@@ -140,7 +146,7 @@ public class CampaignController {
 		return new ResponseEntity<Campaign>(HttpStatus.UNAUTHORIZED);
 	}
 	
-	@PutMapping("/dislike/{url}")
+	@PutMapping("/{url}/dislike")
 	public ResponseEntity<Campaign> addDislikeByURL(@RequestHeader("Authorization") String header, @PathVariable("url") String url) throws ServletException {
 		if(jwtservice.userExist(header) == null) {
 			return new ResponseEntity<Campaign>(HttpStatus.NOT_FOUND);
@@ -158,7 +164,7 @@ public class CampaignController {
 		return new ResponseEntity<Campaign>(HttpStatus.UNAUTHORIZED);
 	}
 	
-	@PutMapping("/donation/{url}")
+	@PutMapping("/{url}/donation")
 	public ResponseEntity<Campaign> addDonation(@RequestHeader("Authorization") String header, @PathVariable("url") String url, @RequestBody String value) throws ServletException {
 		if(jwtservice.userExist(header) == null) {
 			return new ResponseEntity<Campaign>(HttpStatus.NOT_FOUND);
@@ -184,7 +190,7 @@ public class CampaignController {
 	
 
 	//get todas as campanhas que um usuario realizou alguma doacao
-	@GetMapping("/donations/{email}")
+	@GetMapping("/{email}/donations")
 	public ResponseEntity<List<Campaign>> getCampaignByDonor(@PathVariable("email") String email) throws ServletException {		
 		User u = uservice.getUser(email);
 		if(u != null) {
@@ -194,24 +200,51 @@ public class CampaignController {
 	}
 	
 	//get todas as campanhas que um usuario realizou alguma doacao
-		@GetMapping("/campaign/{email}")
-		public ResponseEntity<List<Campaign>> getCampaignByOwner(@PathVariable("email") String email) throws ServletException {		
-			User u = uservice.getUser(email);
-			if(u != null) {
-				return new ResponseEntity<List<Campaign>>(campaignService.getCampaignsByOwner(email), HttpStatus.OK);
-			}
-			return new ResponseEntity<List<Campaign>>( HttpStatus.NOT_FOUND);
+	@GetMapping("/{email}/campaign")
+	public ResponseEntity<List<Campaign>> getCampaignByOwner(@PathVariable("email") String email) throws ServletException {		
+		User u = uservice.getUser(email);
+		if(u != null) {
+			return new ResponseEntity<List<Campaign>>(campaignService.getCampaignsByOwner(email), HttpStatus.OK);
 		}
-
+		return new ResponseEntity<List<Campaign>>( HttpStatus.NOT_FOUND);
+	}
+	
+	/**
+	 * Método para alterar a descrição de uma campanha.
+	 * @param header
+	 * @param url
+	 * @param description
+	 * @return
+	 * @throws ServletException
+	 */
+	@PutMapping("{url}/description")
+	public ResponseEntity<Campaign> setDescription(@RequestHeader("Authorization") String header, @PathVariable("url") String url, @RequestBody String description) throws ServletException {
+		if(jwtservice.userExist(header) == null)
+			return new ResponseEntity<Campaign>(HttpStatus.NOT_FOUND);
+		try {
+			User user = jwtservice.userExist(header);
+			if(jwtservice.userHasPermission(header, user.getEmail())) {
+				Campaign campaign = this.campaignService.setDescription(user, url, description);
+				if(campaign == null) return new ResponseEntity<Campaign>(HttpStatus.BAD_REQUEST);
+				return new ResponseEntity<Campaign>(campaign, HttpStatus.OK);
+			}
+		} catch (ServletException s) {
+			return new ResponseEntity<Campaign>(HttpStatus.FORBIDDEN);
+		}
+		return new ResponseEntity<Campaign>(HttpStatus.UNAUTHORIZED);
+	}
+	
 	//método para atualizar a deadline de uma campanha, faz checagem se o usuario esta logado e devidamente autorizado.
-	@PutMapping("/deadline/{url}")
-	public ResponseEntity<Campaign> updateDeadline(@RequestHeader("Authorization") String header, @PathVariable("url") String url, @RequestBody String newDate) throws ServletException{
+	@PutMapping("/{url}/deadline")
+	public ResponseEntity<Campaign> updateDeadline(@RequestHeader("Authorization") String header, @PathVariable("url") String url, @RequestBody LocalDate newDate) throws ServletException{
+		if(newDate.isBefore(LocalDate.now()))
+			return new ResponseEntity<Campaign>(HttpStatus.BAD_REQUEST);
 		if(jwtservice.userExist(header) == null)
 			return new ResponseEntity<Campaign>(HttpStatus.NOT_FOUND);//usuario nao encontrado
 		try {
 			User user = jwtservice.userExist(header);
 			if(jwtservice.userHasPermission(header, user.getEmail())) {
-				Campaign campaign = this.campaignService.updateDeadline(user, url, LocalDate.parse(newDate));
+				Campaign campaign = this.campaignService.updateDeadline(user, url, newDate);
 				if(campaign == null) return new ResponseEntity<Campaign>(HttpStatus.BAD_REQUEST);//usuario passou parametros errados
 				return new ResponseEntity<Campaign>(campaign, HttpStatus.OK);//retorna a campanha com a nova deadline
 			}
@@ -222,7 +255,7 @@ public class CampaignController {
 	}
 	
 	//método para alterar a meta da campanha, checando se o usuário está logado e devidamente autorizado.
-	@PutMapping("/goal/{url}")
+	@PutMapping("/{url}/goal")
 	public ResponseEntity<Campaign> updateGoal(@RequestHeader("Authorization") String header, @PathVariable("url") String url, @RequestBody Double newGoal) throws ServletException {
 		if(jwtservice.userExist(header) == null)
 			return new ResponseEntity<Campaign>(HttpStatus.NOT_FOUND);//usuário nao encontrado
@@ -239,104 +272,57 @@ public class CampaignController {
 		return new ResponseEntity<Campaign>(HttpStatus.UNAUTHORIZED);//usuario sem permissao
 	}
 	
-	/**
-	 * Método para adicionar comentários a uma campanha, apenas se o usuário estiver logado e tiver a permissão.
-	 * @param header
-	 * @param url
-	 * @param comment
-	 * @return
-	 * @throws ServletException
-	 */
 	@PostMapping("/{url}/comment")
-	public ResponseEntity<Campaign> addCommentInCampaign(@RequestHeader("Authorization") String header, @PathVariable("url") String url, @RequestBody Comment comment) throws ServletException {
+	public ResponseEntity<Comment> addComment(@RequestHeader("Authorization") String header, @PathVariable("url") String url, @RequestBody String text) throws ServletException {
 		if(jwtservice.userExist(header) == null)
-			return new ResponseEntity<Campaign>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<Comment>(HttpStatus.NOT_FOUND);
 		try {
 			User user = jwtservice.userExist(header);
 			if(jwtservice.userHasPermission(header, user.getEmail())) {
-				Campaign campaign = this.campaignService.addComment(user, url, comment);
-				if(campaign == null) return new ResponseEntity<Campaign>(HttpStatus.BAD_REQUEST);
-				return new ResponseEntity<Campaign>(campaign, HttpStatus.OK);
+				Campaign campaign = this.campaignService.findByUrlId(url);
+				Comment com = this.commentService.create(campaign, user, text, 0);
+				if(campaign == null) return new ResponseEntity<Comment>(HttpStatus.BAD_REQUEST);
+				return new ResponseEntity<Comment>(com, HttpStatus.CREATED);
 			}
 		} catch (ServletException s) {
-			return new ResponseEntity<Campaign>(HttpStatus.FORBIDDEN);
+			return new ResponseEntity<Comment>(HttpStatus.FORBIDDEN);
 		}
-		return new ResponseEntity<Campaign>(HttpStatus.UNAUTHORIZED);
+		return new ResponseEntity<Comment>(HttpStatus.UNAUTHORIZED);
 	}
 	
-	/**
-	 * Método para adicionar comentários a um outro comentário. Somente se o usuário estiver logado e tiver permissão.
-	 * @param header
-	 * @param url
-	 * @param comment
-	 * @param idComment
-	 * @return
-	 * @throws ServletException
-	 */
-	@PostMapping("/{url}/comment/reply")
-	public ResponseEntity<Campaign> replyComment(@RequestHeader("Authorization") String header, @PathVariable("url") String url, @RequestBody Comment reply, @RequestBody String idComment) throws ServletException {
+	@PostMapping("/{url}/comment/{idComment}")
+	public ResponseEntity<Comment> addReply(@RequestHeader("Authorization") String header, @PathVariable("url") String url, @PathVariable("idComment") long idComment, @RequestBody String text) throws ServletException {
 		if(jwtservice.userExist(header) == null)
-			return new ResponseEntity<Campaign>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<Comment>(HttpStatus.NOT_FOUND);
 		try {
 			User user = jwtservice.userExist(header);
 			if(jwtservice.userHasPermission(header, user.getEmail())) {
-				Campaign campaign = this.campaignService.replyComment(user, url, reply, idComment);
-				if(campaign == null) return new ResponseEntity<Campaign>(HttpStatus.BAD_REQUEST);
-				return new ResponseEntity<Campaign>(campaign, HttpStatus.OK);
+				Campaign campaign = this.campaignService.findByUrlId(url);
+				Comment com = this.commentService.create(campaign, user, text, idComment);
+				if(campaign == null || com == null) return new ResponseEntity<Comment>(HttpStatus.BAD_REQUEST);
+				return new ResponseEntity<Comment>(com, HttpStatus.OK);
 			}
 		} catch (ServletException s) {
-			return new ResponseEntity<Campaign>(HttpStatus.FORBIDDEN);
+			return new ResponseEntity<Comment>(HttpStatus.FORBIDDEN);
 		}
-		return new ResponseEntity<Campaign>(HttpStatus.UNAUTHORIZED);
-	} 
+		return new ResponseEntity<Comment>(HttpStatus.UNAUTHORIZED);
+	}
 	
-	/**
-	 * Método para deletar comentários, o comentário em si não é apagado do banco, apenas seu texto é retornado nulo.
-	 * @param header
-	 * @param url
-	 * @param idComment
-	 * @return
-	 * @throws ServletException
-	 */
-	@PutMapping("{url}/comment/delete")
-	public ResponseEntity<Campaign> deleteComment(@RequestHeader("Authorization") String header, @PathVariable("url") String url, @RequestBody String idComment) throws ServletException {
+	@PutMapping("/{url}/comment")
+	public ResponseEntity<Comment> deleteComment(@RequestHeader("Authorization") String header, @RequestBody long idComment) throws ServletException {
 		if(jwtservice.userExist(header) == null)
-			return new ResponseEntity<Campaign>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<Comment>(HttpStatus.NOT_FOUND);
 		try {
 			User user = jwtservice.userExist(header);
 			if(jwtservice.userHasPermission(header, user.getEmail())) {
-				Campaign campaign = this.campaignService.deleteComment(user, url, idComment);
-				if(campaign == null) return new ResponseEntity<Campaign>(HttpStatus.BAD_REQUEST);
-				return new ResponseEntity<Campaign>(campaign, HttpStatus.OK);
+				Comment com = this.commentService.deleteUpdate(idComment, user.getEmail());
+				if(com == null) return new ResponseEntity<Comment>(HttpStatus.BAD_REQUEST);
+				return new ResponseEntity<Comment>(com, HttpStatus.OK);
 			}
 		} catch (ServletException s) {
-			return new ResponseEntity<Campaign>(HttpStatus.FORBIDDEN);
+			return new ResponseEntity<Comment>(HttpStatus.FORBIDDEN);
 		}
-		return new ResponseEntity<Campaign>(HttpStatus.UNAUTHORIZED);
+		return new ResponseEntity<Comment>(HttpStatus.UNAUTHORIZED);
 	}
-
-	/**
-	 * Método para alterar a descrição de uma campanha.
-	 * @param header
-	 * @param url
-	 * @param description
-	 * @return
-	 * @throws ServletException
-	 */
-	@PutMapping("{url}/comment/description")
-	public ResponseEntity<Campaign> setDescription(@RequestHeader("Authorization") String header, @PathVariable("url") String url, @RequestBody String description) throws ServletException {
-		if(jwtservice.userExist(header) == null)
-			return new ResponseEntity<Campaign>(HttpStatus.NOT_FOUND);
-		try {
-			User user = jwtservice.userExist(header);
-			if(jwtservice.userHasPermission(header, user.getEmail())) {
-				Campaign campaign = this.campaignService.setDescription(user, url, description);
-				if(campaign == null) return new ResponseEntity<Campaign>(HttpStatus.BAD_REQUEST);
-				return new ResponseEntity<Campaign>(campaign, HttpStatus.OK);
-			}
-		} catch (ServletException s) {
-			return new ResponseEntity<Campaign>(HttpStatus.FORBIDDEN);
-		}
-		return new ResponseEntity<Campaign>(HttpStatus.UNAUTHORIZED);
-	}
+	
 }

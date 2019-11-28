@@ -3,7 +3,6 @@ package com.psoft.project.entities;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -14,6 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotBlank;
@@ -47,7 +47,7 @@ public class Campaign {
 	@OneToOne(targetEntity = User.class, fetch = FetchType.LAZY)
 	private User owner;
 	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-	@OneToMany(targetEntity = Comment.class, fetch = FetchType.LAZY)
+	@ManyToMany(cascade = CascadeType.ALL,targetEntity = Comment.class, fetch = FetchType.LAZY)
 	private List<Comment> comments;
 	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 	@ManyToMany(targetEntity = User.class, fetch = FetchType.LAZY)
@@ -73,6 +73,7 @@ public class Campaign {
 		this.deadLine = d;
 		this.status = "Ativa";
 		this.goal = goal;
+		this.comments = new ArrayList<Comment>();
 	}
 
 	public Integer getId() {
@@ -96,6 +97,7 @@ public class Campaign {
 	}
 
 	public String getStatus() {
+		this.checkStatus();
 		return status;
 	}
 
@@ -115,7 +117,7 @@ public class Campaign {
 	}
 
 	public List<Comment> getComments() {
-		return comments;
+		return this.comments;
 	}
 
 	public List<User> getLikes() {
@@ -207,24 +209,28 @@ public class Campaign {
 		return null;		
 	}
 	
-	public void checkExpired() {
-		if (this.getDeadLine().isBefore(LocalDate.now()) && !(this.totalValue().equals(this.goal)));
-			this.setStatus("Vencida");
+	public void addComment(Comment comment) {
+		this.comments.add(comment);
 	}
 	
-	public Double totalValue() {
-		Iterator<Donation> it = this.donations.iterator();
+	private Double sumDonations() {
 		Double resp = 0.0;
-		while (it.hasNext()) {
-			Donation d = it.next();
+		for (Donation d : donations) {
 			resp += d.getValue();
-			}
+		}
 		return resp;
 	}
 	
-
-	public void checkConcluded() {
-		if(this.totalValue().equals(this.goal))
-			this.setStatus("Concluida");
+	private void checkStatus() {
+		if(this.deadLine.isBefore(LocalDate.now()) && this.sumDonations().compareTo(goal) < 0) {
+			this.status = "Vencida";
+		}
+		else if(this.deadLine.isBefore(LocalDate.now()) && this.sumDonations().compareTo(goal) >= 0) {
+			this.status = "Concluida";
+		}
+			
 	}
+	
+	
+	
 }

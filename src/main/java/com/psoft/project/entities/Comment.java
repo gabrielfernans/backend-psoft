@@ -1,7 +1,7 @@
 package com.psoft.project.entities;
 
 import java.time.LocalDate;
-import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -25,79 +25,90 @@ public class Comment {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
-	@NotBlank(message = "{description.not.blank}")
-	private String comment;
+	private long id;
 	@OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)
 	private User user;
-	@NotNull(message = "{deadLine.not.blank}")
+	@NotNull(message = "{deadLine.not.null}")
 	@JsonFormat(pattern="yyyy-MM-dd")
 	private LocalDate date;
+	@NotNull(message = "text.not.null}")
+	private String text;
 	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 	@OneToMany(targetEntity = Comment.class, fetch = FetchType.LAZY)
 	private List<Comment> replies;
-	@ManyToOne(targetEntity = Campaign.class, fetch = FetchType.EAGER)
-	private Campaign campaign;
-	@NotNull(message = "isDeleted.not.blank}")
+	@NotNull(message = "isDeleted.not.null}")
 	private Boolean isDeleted;
-	
-	private Boolean isReply;
 	
 	public Comment() {
 	}
 
-	public Comment(String comment, User user, Campaign campaign) {
-		super();
-		this.comment = comment;
-		this.user = user;
-		this.campaign = campaign;
-		this.date = LocalDate.now();
-		this.replies = new LinkedList<Comment>();
-		this.isDeleted = false;
-	}
-
+	 public Comment(Campaign campaign, User user, String text, LocalDate date, ArrayList<Comment> replies) {
+	        this.user = user;
+	        this.text = text;
+	        this.date = date;
+	        this.replies = replies;
+	        this.isDeleted = false;
+	    }
+	
 	@Override
 	public String toString() {
 		String resp = null;
-		if(!isDeleted())
-			resp = this.comment;
+		if(!this.getIsDeleted())
+			resp = this.text;
 		return resp;
+	}
+	
+	public void addReply(Comment reply) {
+        replies.add(reply);
+    }
+
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
 	}
 
 	public User getUser() {
 		return user;
 	}
-	
-	public Boolean isDeleted() {
-		return this.isDeleted;
+
+	public void setUser(User user) {
+		this.user = user;
 	}
-	
+
 	public LocalDate getDate() {
-		return this.date;
+		return date;
 	}
-	
+
+	public void setDate(LocalDate date) {
+		this.date = date;
+	}
+
+	public String getText() {
+		return text;
+	}
+
+	public void setText(String text) {
+		this.text = text;
+	}
+
 	public List<Comment> getReplies() {
-		return this.replies;
+		return replies;
 	}
-	
-	public Campaign getCampaign() {
-		return this.campaign;
+
+	public void setReplies(List<Comment> replies) {
+		this.replies = replies;
 	}
-	
-	
-	public void deleteComment() {
-		this.isDeleted = true;
+
+	public Boolean getIsDeleted() {
+		return isDeleted;
 	}
-	
-	public void setCampaign(Campaign c) {
-		this.campaign = c;
+
+	public void setIsDeleted(Boolean isDeleted) {
+		this.isDeleted = isDeleted;
 	}
-	
-	public void setUser(User u) {
-		this.user = u;
-	}
-	
-	
 	
 	
 	

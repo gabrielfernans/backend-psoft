@@ -29,7 +29,4 @@ public interface CampaignRepository<T, ID extends Serializable> extends JpaRepos
 	@Query(value = "select * from Campaign as u where OWNER_EMAIL like :email", nativeQuery = true)
 	public List<Campaign> findAllCampaignsByOwner(@Param("email") String email);
 	
-	@Query(value = "select u from Campaign u where UPPER(u.description) like UPPER(CONCAT('%',:newDesc,'%'))")
-	public List<Campaign> findBySubString(@Param("newDesc") String description);
-
 }

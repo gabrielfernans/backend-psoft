@@ -39,8 +39,9 @@ public class LoginController {
 	}
 	
 	private String createToken(String email) {
+		
 		return Jwts.builder().setSubject(email).signWith(SignatureAlgorithm.HS512, TOKEN_KEY)
-				.setExpiration(new Date(System.currentTimeMillis() + 1 * 60 * 10000)).compact();
+				.setExpiration(new Date(System.currentTimeMillis() + 1 * 60 * 30000)).compact();
 	}
 
 	private void checkPassword(User authUser, User user) throws ServletException {

@@ -1,5 +1,7 @@
 package com.psoft.project.services;
 
+import java.text.Normalizer;
+
 import java.time.LocalDate;
 
 import org.springframework.stereotype.Service;
@@ -12,18 +14,15 @@ import com.psoft.project.entities.Comment;
 import com.psoft.project.entities.User;
 import com.psoft.project.exceptions.InvalidDateException;
 import com.psoft.project.repositories.CampaignRepository;
-import com.psoft.project.repositories.CommentRepository;
 
 @Service
 public class CampaignService {
 	
 	private CampaignRepository<Campaign, Integer> campaigns;
-	private CommentRepository<Comment, Integer> comments;
 	
-	public CampaignService(CampaignRepository<Campaign, Integer> campaigns, CommentRepository<Comment, Integer> comments) {
+	public CampaignService(CampaignRepository<Campaign, Integer> campaigns) {
 		super();
 		this.campaigns = campaigns;
-		this.comments = comments;
 	}
 	
 
@@ -36,15 +35,27 @@ public class CampaignService {
 	}
 	
 	//Retorna uma lista de campanhas que contem uma determinada substring.
-	public List<Campaign> getCampaignBySubstring(String newDesc) {
-		return this.campaigns.findBySubString(newDesc);
-	}
+	public List<Campaign> getCampaignByName(String subStr) {
+		
+		if (subStr == null) throw new IllegalArgumentException("A subString não pode ser Null");
+		if (subStr.trim().equals(""))
+            throw new IllegalArgumentException("A subString não pode ser vazia, insira uma subString valida");
+		
+		List<Campaign> search = campaigns.findAll();
+        List<Campaign> result = new ArrayList<Campaign>();
+        String substringSemAcento = Normalizer.normalize(subStr, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "").toUpperCase();
+        
+        for (Campaign c : search) {
+            String name = Normalizer.normalize(c.getName(), Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "").toUpperCase();
+            if (name.contains(substringSemAcento)) {
+                result.add(c);
+            }
+        }
+        return result;
+    }
 	
 	public Campaign findByUrlId(String url) {
-		Campaign c =  this.campaigns.findByUrlId(url);
-		c.checkConcluded();
-		c.checkExpired();
-		return c;
+		return this.campaigns.findByUrlId(url);
 	}
 	
 	public Campaign finishCampaignByURL(User user, String url){
@@ -96,10 +107,10 @@ public class CampaignService {
 	//método para mudar a deadline da campanha apenas se a nova data estiver no futuro.
 	public Campaign updateDeadline(User user, String url, LocalDate newDate) {
 		Campaign c = this.campaigns.findByUrlId(url);
-		if(c != null && !newDate.isBefore(LocalDate.now()) && c.getOwner().getEmail().equals(user.getEmail())) {
+		if(c != null && c.getOwner().getEmail().equals(user.getEmail())) {
 			c.setDeadLine(newDate);
 			this.campaigns.save(c);
-		}
+		} 
 		return c;
 	}
 
@@ -115,43 +126,6 @@ public class CampaignService {
 
 	public List<Campaign> getCampaignsByOwner(String email){
 		return campaigns.findAllCampaignsByOwner(email);
-	}
-
-	public Campaign addComment(User user, String url, Comment comment) {
-		Campaign c = this.campaigns.findByUrlId(url);
-
-		if (c != null) {
-			comment.setCampaign(c);;
-			comment.setUser(user);
-			c.getComments().add(comment);
-			this.comments.save(comment);
-			this.campaigns.save(c);
-		} 
-		return c;
-	}
-	
-	public Campaign replyComment(User user, String url, Comment reply, String idComment) {
-		Campaign c = this.campaigns.findByUrlId(url);
-		if(c != null) {
-			Comment com = this.comments.getOne(Integer.parseInt(idComment));
-			reply.setCampaign(c);
-			reply.setUser(user);
-			com.getReplies().add(reply);
-			this.comments.save(reply);
-			this.campaigns.save(c);
-		}
-		return c;
-	}
-	
-	public Campaign deleteComment(User user, String url, String idComment) {
-		Campaign c = this.campaigns.findByUrlId(url);
-		Comment com = this.comments.getOne(Integer.parseInt(idComment));
-		if(c != null && !com.isDeleted() && com.getUser().getEmail().equals(user.getEmail())) {
-			com.deleteComment();
-			this.comments.save(com);
-			this.campaigns.save(c);
-		}
-		return c;
 	}
 	
 	public Campaign setDescription(User user, String url, String description) {
