@@ -33,8 +33,11 @@ public class UsersController {
 	@PostMapping()
 	public ResponseEntity<User> setUser(@RequestBody @Valid User user) {
 		User tempUser = userService.getUser(user.getEmail());
-		if(tempUser == null)
+		if(tempUser == null){
+			User u = userService.setUser(user);
+			u.setPassword("fakePassword");
 			return new ResponseEntity<User>(userService.setUser(user), HttpStatus.OK);
+		}
 		else
 			return new ResponseEntity<User>(HttpStatus.CONFLICT);
 	}
