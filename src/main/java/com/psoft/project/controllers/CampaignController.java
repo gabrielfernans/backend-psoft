@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.psoft.project.entities.Campaign;
 import com.psoft.project.entities.Comment;
@@ -271,7 +272,25 @@ public class CampaignController {
 	}
 	
 	@PostMapping("/{url}/comment")
-	public ResponseEntity<Comment> addComment(@RequestHeader("Authorization") String header, @PathVariable("url") String url, @RequestParam(name = "idComment", defaultValue = "0") long idComment, @RequestBody String text) throws ServletException {
+	public ResponseEntity<Comment> addComment(@RequestHeader("Authorization") String header, @PathVariable("url") String url, @RequestBody String text) throws ServletException {
+		if(jwtservice.userExist(header) == null)
+			return new ResponseEntity<Comment>(HttpStatus.NOT_FOUND);
+		try {
+			User user = jwtservice.userExist(header);
+			if(jwtservice.userHasPermission(header, user.getEmail())) {
+				Campaign campaign = this.campaignService.findByUrlId(url);
+				Comment com = this.commentService.create(campaign, user, text, 0);
+				if(campaign == null || com == null) return new ResponseEntity<Comment>(HttpStatus.BAD_REQUEST);
+				return new ResponseEntity<Comment>(com, HttpStatus.OK);
+			}
+		} catch (ServletException s) {
+			return new ResponseEntity<Comment>(HttpStatus.FORBIDDEN);
+		}
+		return new ResponseEntity<Comment>(HttpStatus.UNAUTHORIZED);
+	}
+	
+	@PostMapping("/{url}/comment/{idComment}")
+	public ResponseEntity<Comment> addReply(@RequestHeader("Authorization") String header, @PathVariable("url") String url, @PathVariable("idComment") long idComment, @RequestBody String text) throws ServletException {
 		if(jwtservice.userExist(header) == null)
 			return new ResponseEntity<Comment>(HttpStatus.NOT_FOUND);
 		try {
