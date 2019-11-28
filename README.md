@@ -8,9 +8,13 @@
 
 >O sistema foi desenvolvido como projeto final da disciplina Projeto de Software no período 2019.2, ministrada por Dalton Serey e Raquel Lopes.
 
+###Token
+
+>O token de autenticação do usuário tem duração de 30 min.
+
 ### Links
 
-- [Vídeo do youtube](http://youtube.com "Vídeo do youtube")
+- [Vídeo do youtube](https://www.youtube.com/watch?v=APwEOu0Wlmk&feature=youtu.be "Vídeo do youtube")
 - [Documentação](http://doc-api-ajude.esy.es/ "Documentação")
 - [Aplicação](https://ajude-psoft.netlify.com/views/ "Aplicação")
 
@@ -18,3 +22,4 @@
 * [Gabriel Fernandes](https://github.com/gabrielfernans)
 * [Débora Leda](https://github.com/deboraleda)
 * [João Martins](https://github.com/joaobnd)
+
