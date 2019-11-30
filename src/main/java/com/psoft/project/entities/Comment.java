@@ -10,6 +10,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -26,7 +27,8 @@ public class Comment {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
-	@OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+	@OneToOne(targetEntity = User.class, fetch = FetchType.LAZY)
 	private User user;
 	@NotNull(message = "{deadLine.not.null}")
 	@JsonFormat(pattern="yyyy-MM-dd")
@@ -34,7 +36,7 @@ public class Comment {
 	@NotNull(message = "text.not.null}")
 	private String text;
 	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-	@OneToMany(targetEntity = Comment.class, fetch = FetchType.LAZY)
+	@ManyToMany(targetEntity = Comment.class, fetch = FetchType.LAZY)
 	private List<Comment> replies;
 	@NotNull(message = "isDeleted.not.null}")
 	private Boolean isDeleted;
