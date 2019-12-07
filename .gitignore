@@ -1,5 +1,5 @@
 HELP.md
-mvnw
+mvnw*
 target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**
@@ -19,7 +19,7 @@ dados*
 .settings
 .springBeans
 .sts4-cache
-.cmd
+*.cmd
 
 ### IntelliJ IDEA ###
 .idea
